@@ -93,8 +93,26 @@ exports.login = function (req, res, next) {
 
 // VOIR TOUS LES UTILISATEURS : Middleware pour voir tous les utilisateurs
 exports.seeAllUsers = function (req, res, next) {
+  // Requête SQL pour chercher les utilisateurs dans la base de données
   mysqlConnection.query(
     `SELECT * FROM users`,
+    function (error, results, fields) {
+      if (error) {
+        res
+          .status(400)
+          .json({ message: "Une erreur est survenue ! 😅", error });
+      } else {
+        res.status(200).json(results);
+      }
+    }
+  );
+};
+
+// VOIR UN UTILISATEUR : Middleware pour voir un utilisateur
+exports.seeOneUser = function (req, res, next) {
+  // Requête SQL pour chercher l'utilisateur dans la base de données
+  mysqlConnection.query(
+    `SELECT * FROM users WHERE idUser="${req.params.id}"`,
     function (error, results, fields) {
       if (error) {
         res
