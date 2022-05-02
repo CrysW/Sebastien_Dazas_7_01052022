@@ -8,6 +8,7 @@ const checkFirstName = require("../middleware/checkFirstName"); // Importation d
 const checkEmail = require("../middleware/checkEmail"); // Importation du middleware de contrôle de l'email 'checkEmail'
 const checkPassword = require("../middleware/checkPassword"); // Importation du middleware de contrôle du password 'checkPassword'
 const checkConnection = require("../middleware/checkConnection"); // Importation du middleware de limitation de connexion infructueuses
+const multer = require("../middleware/multer"); // Importation du middleware multer
 
 // CREATION DU ROUTER
 const router = express.Router();
@@ -28,6 +29,8 @@ router.post("/login", checkConnection, userCtrl.login);
 router.get("/", userCtrl.seeAllUsers);
 // Route pour voir un utilisateur
 router.get("/:id", userCtrl.seeOneUser);
+// Route pour modifier la photo de profil
+router.put("/picture/:id", multer, userCtrl.updateProfilPictureUser);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

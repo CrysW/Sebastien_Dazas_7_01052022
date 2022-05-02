@@ -5,6 +5,7 @@ require("dotenv").config(); // Importation du package 'dotenv'
 const bcrypt = require("bcrypt"); // Importation du package de cryptage 'bcrypt'
 const mysqlConnection = require("../database/db"); // Importation de la connexion à la base de données mysql
 const jwt = require("jsonwebtoken"); // Importation du package 'jsonwebtoken' pour l'encodage des 'Token'
+const fs = require("fs-extra"); // Importation du package file system 'fs'
 
 // INSCRIPTION : Middleware pour l'enregistrement de nouveaux utilisateurs
 exports.signup = function (req, res, next) {
@@ -123,4 +124,49 @@ exports.seeOneUser = function (req, res, next) {
       }
     }
   );
+};
+
+// MODIFIER LA PHOTO DE PROFIL DE L'UTILISATEUR : Middleware pour modifier la photo de profil de l'utilisateur
+exports.updateProfilPictureUser = function (req, res, next) {
+  if (req.file) {
+    // Requête SQL pour récupérer la photo de profil à supprimer dans la base de données
+    mysqlConnection.query(
+      `SELECT profilePicture FROM users WHERE idUser=${req.params.id};`,
+      function (error, results, fields) {
+        if (error) {
+          res
+            .status(400)
+            .json({ message: "Une erreur est survenue ! 😅", error });
+        } else {
+          const pictureToDelete = results[0].profilePicture.split("/images")[1];
+          const pictureToAdd = `${req.protocol}://${req.get("host")}/images/${
+            req.file.filename
+          }`;
+          // Suppression de l'image dans le dossier 'images' du serveur
+          fs.removeSync(`images/${pictureToDelete}`);
+          // Requête SQL pour mettre à jour la photo de profil dans la base de données
+          mysqlConnection.query(
+            `UPDATE users SET profilePicture = "${pictureToAdd}" WHERE users.idUser = "${req.params.id}"`,
+            function (error, results, fields) {
+              if (error) {
+                res
+                  .status(400)
+                  .json({ message: "Une erreur est survenue ! 😅", error });
+              } else {
+                res.status(200).json({
+                  message:
+                    "La photo de profil a été mises à jour dans la base de données ! 🥳",
+                });
+              }
+            }
+          );
+        }
+      }
+    );
+  } else {
+    res.status(200).json({
+      message:
+        "La photo de profil n'a pas été mise à jour dans la base de données ! 🥳",
+    });
+  }
 };
