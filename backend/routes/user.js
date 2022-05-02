@@ -7,6 +7,7 @@ const checkLastName = require("../middleware/checkLastName"); // Importation du 
 const checkFirstName = require("../middleware/checkFirstName"); // Importation du middleware de contrôle du prénom 'checkFirstName'
 const checkEmail = require("../middleware/checkEmail"); // Importation du middleware de contrôle de l'email 'checkEmail'
 const checkPassword = require("../middleware/checkPassword"); // Importation du middleware de contrôle du password 'checkPassword'
+const checkConnection = require("../middleware/checkConnection"); // Importation du middleware de limitation de connexion infructueuses
 
 // CREATION DU ROUTER
 const router = express.Router();
@@ -21,6 +22,8 @@ router.post(
   checkPassword,
   userCtrl.signup
 );
+// Route pour la connexion d'utilisateurs
+router.post("/login", checkConnection, userCtrl.login);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router
