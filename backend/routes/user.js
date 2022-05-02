@@ -24,6 +24,8 @@ router.post(
 );
 // Route pour la connexion d'utilisateurs
 router.post("/login", checkConnection, userCtrl.login);
+// Route pour voir tous les utilisateurs
+router.get("/", userCtrl.seeAllUsers);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

@@ -90,3 +90,19 @@ exports.login = function (req, res, next) {
     }
   );
 };
+
+// VOIR TOUS LES UTILISATEURS : Middleware pour voir tous les utilisateurs
+exports.seeAllUsers = function (req, res, next) {
+  mysqlConnection.query(
+    `SELECT * FROM users`,
+    function (error, results, fields) {
+      if (error) {
+        res
+          .status(400)
+          .json({ message: "Une erreur est survenue ! 😅", error });
+      } else {
+        res.status(200).json(results);
+      }
+    }
+  );
+};
