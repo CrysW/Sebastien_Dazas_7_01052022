@@ -39,6 +39,8 @@ router.put(
   checkEmail,
   userCtrl.updateUserData
 );
+// Route pour supprimer le compte de l'utilisateur
+router.delete("/:id", userCtrl.deleteAccount);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

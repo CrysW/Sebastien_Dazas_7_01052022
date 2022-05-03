@@ -293,3 +293,20 @@ exports.updateUserData = function (req, res, next) {
     }
   );
 };
+
+// SUPPRIMER : Middleware pour supprimer le compte de l'utilisateur
+exports.deleteAccount = function (req, res, next) {
+  // Requête SQL pour supprimer le compte de l'utilisateur dans la base de données
+  mysqlConnection.query(
+    `DELETE FROM users WHERE users.idUser = ${req.params.id}`,
+    function (error, results, fields) {
+      if (error) {
+        res
+          .status(400)
+          .json({ message: "Une erreur est survenue ! 😅", error });
+      } else {
+        res.status(200).json({ message: "Votre compte a été supprimé ! 😭" });
+      }
+    }
+  );
+};
