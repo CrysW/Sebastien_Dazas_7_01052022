@@ -31,6 +31,14 @@ router.get("/", userCtrl.seeAllUsers);
 router.get("/:id", userCtrl.seeOneUser);
 // Route pour modifier la photo de profil
 router.put("/picture/:id", multer, userCtrl.updateProfilPictureUser);
+// Route pour modifier les données de l'utilisateur
+router.put(
+  "/data/:id",
+  checkLastName,
+  checkFirstName,
+  checkEmail,
+  userCtrl.updateUserData
+);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

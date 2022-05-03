@@ -170,3 +170,126 @@ exports.updateProfilPictureUser = function (req, res, next) {
     });
   }
 };
+
+// MODIFIER LES DONNEES DE L'UTILISATEUR : Middleware pour modifier les données de l'utilisateur
+exports.updateUserData = function (req, res, next) {
+  // Requête SQL pour récupérer des données de l'utilisateur dans la base de données
+  mysqlConnection.query(
+    `SELECT * FROM users WHERE idUser="${req.body.idUser}"`,
+    function (error, results, fields) {
+      if (error) {
+        res
+          .status(400)
+          .json({ message: "Une erreur est survenue ! 😅", error });
+      } else {
+        // Création d'un objet 'dataDatbase' contenant les données de l'utilisateur provenant de la base de données
+        const dataDatabase = {
+          lastName: results[0].lastName,
+          firstName: results[0].firstName,
+          emailAdress: results[0].emailAdress,
+          password: results[0].password,
+        };
+        // Création d'un objet 'dataRequest' contenant les données de l'utilisateur provenant du body de la requête
+        const dataRequest = {
+          lastName: req.body.lastName,
+          firstName: req.body.firstName,
+          emailAdress: req.body.emailAdress,
+          password: req.body.password,
+        };
+        // Comparaison des données des 2 objets
+        if (
+          dataDatabase.lastName === dataRequest.lastName &&
+          dataDatabase.firstName === dataRequest.firstName &&
+          dataDatabase.emailAdress === dataRequest.emailAdress &&
+          dataDatabase.password === dataRequest.password
+        ) {
+          res.status(200).json({
+            message: "Aucunes données n'a besoin d'être mises à jour ! 🥳",
+          });
+        } else if (dataDatabase.lastName !== dataRequest.lastName) {
+          // MISE A JOUR DU LAST NAME
+          // Requête SQL pour mettre à jour le 'lastName' dans la base de données
+          mysqlConnection.query(
+            `UPDATE users SET lastName = "${dataRequest.lastName}" WHERE users.idUser = "${req.body.idUser}"`,
+            function (error, results, fields) {
+              if (error) {
+                res
+                  .status(400)
+                  .json({ message: "Une erreur est survenue ! 😅", error });
+              } else {
+                res.status(200).json({
+                  message:
+                    "Le nom a été mise à jour dans la base de données ! 🥳",
+                });
+              }
+            }
+          );
+        } else if (dataDatabase.firstName !== dataRequest.firstName) {
+          // MISE A JOUR DU FIRST NAME
+          // Requête SQL pour mettre à jour le 'firstName' dans la base de données
+          mysqlConnection.query(
+            `UPDATE users SET firstName = "${dataRequest.firstName}" WHERE users.idUser = "${req.body.idUser}"`,
+            function (error, results, fields) {
+              if (error) {
+                res
+                  .status(400)
+                  .json({ message: "Une erreur est survenue ! 😅", error });
+              } else {
+                res.status(200).json({
+                  message:
+                    "Le prénom a été mise à jour dans la base de données ! 🥳",
+                });
+              }
+            }
+          );
+        } else if (dataDatabase.emailAdress !== dataRequest.emailAdress) {
+          // MISE A JOUR DE L'ADRESSE EMAIL
+          // Requête SQL pour mettre à jour 'emailAdress' dans la base de données
+          mysqlConnection.query(
+            `UPDATE users SET emailAdress = "${dataRequest.emailAdress}" WHERE users.idUser = "${req.body.idUser}"`,
+            function (error, results, fields) {
+              if (error) {
+                res
+                  .status(400)
+                  .json({ message: "Une erreur est survenue ! 😅", error });
+              } else {
+                res.status(200).json({
+                  message:
+                    "L'adresse' a été mise à jour dans la base de données ! 🥳",
+                });
+              }
+            }
+          );
+        } else if (dataDatabase.password !== dataRequest.password) {
+          // MISE A JOUR DU PASSWORD
+          // Hashage du nouveau mot de passe
+          bcrypt
+            .hash(dataRequest.password, 10)
+            .then(function (hash) {
+              // Mot de passe hashé
+              const hashedPassword = hash;
+              // Requête SQL pour mettre à jour le 'password' dans la base de données
+              mysqlConnection.query(
+                `UPDATE users SET password = "${hashedPassword}" WHERE users.idUser = "${req.body.idUser}"`,
+                function (error, results, fields) {
+                  if (error) {
+                    res
+                      .status(400)
+                      .json({ message: "Une erreur est survenue ! 😅", error });
+                  } else {
+                    res.status(200).json({
+                      message:
+                        "Le mot de passe a été mise à jour dans la base de données ! 🥳",
+                    });
+                  }
+                }
+              );
+            })
+            .catch(function (error) {
+              res.status(500).json({ error: error });
+            });
+        }
+      }
+    }
+  );
+};
