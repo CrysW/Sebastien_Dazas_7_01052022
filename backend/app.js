@@ -4,6 +4,7 @@ const express = require("express"); // Importation du package 'express'
 const morgan = require("morgan"); // Importation du package 'morgan' (logger htpp)
 const mysql = require("./database/db"); // Importation de la connexion à la base de données mysql
 const userRoutes = require("./routes/user"); // Importation du 'router' pour le parcours des utilisateurs
+const publicationRoutes = require("./routes/publication"); // Importation du 'router' pour le parcours des publications
 
 // Création de l'application 'express'
 const app = express();
@@ -30,6 +31,7 @@ app.use(function (req, res, next) {
 
 // Enregistrement du 'router' pour toutes les demandes effectuées
 app.use("/api/users", userRoutes);
+app.use("/api/publications", publicationRoutes);
 
 // EXPORT(S)
 module.exports = app; // Exportation de l'application 'express'
