@@ -11,6 +11,8 @@ const router = express.Router();
 // CREATION DES ROUTES
 // Route pour ajouter une publication
 router.post("/:id", multer, publicationCtrl.addPublication);
+// Route pour voir toute les publications
+router.get("/", publicationCtrl.seeAllPublications);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

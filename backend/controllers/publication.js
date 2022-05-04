@@ -117,3 +117,20 @@ exports.addPublication = function (req, res, next) {
     });
   }
 };
+
+// VOIR TOUTE LES PUBLICATIONS : Middleware pour ajouter une publication
+exports.seeAllPublications = function (req, res, next) {
+  // Requête SQL pour chercher toutes les publications dans la base de données
+  mysqlConnection.query(
+    `SELECT idPublication, firstName, lastName, profilePicture, CAST(publicationDate AS CHAR) AS publicationDate, publicationPicture, publicationContent FROM users INNER JOIN publications ON users.idUser = publications.idUser ORDER BY idPublication DESC;`,
+    function (error, results, fields) {
+      if (error) {
+        res
+          .status(400)
+          .json({ message: "Une erreur est survenue ! 😅", error });
+      } else {
+        res.status(200).json(results);
+      }
+    }
+  );
+};
