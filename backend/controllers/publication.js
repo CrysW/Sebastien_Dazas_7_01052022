@@ -23,13 +23,17 @@ exports.addPublication = function (req, res, next) {
   if (req.file && req.body.publication) {
     // Récupération des données contenu dans req.body.publication
     const dataReqBodyPublication = JSON.parse(req.body.publication);
+    // Récupération de l'image dans req.file.filename
+    const dataReqFile = `${req.protocol}://${req.get("host")}/images/${
+      req.file.filename
+    }`;
     if (
       dataReqBodyPublication.publicationContent.length >= 10 &&
       dataReqBodyPublication.publicationContent.length <= 280
     ) {
       // Requête SQL pour envoyer les données dans la base de données
       mysqlConnection.query(
-        `INSERT INTO publications (publicationDate, publicationContent, publicationPicture, idUser) VALUES ("${publicationDate}", "${dataReqBodyPublication.publicationContent}", "${req.file.originalname}", "${req.params.id}")`,
+        `INSERT INTO publications (publicationDate, publicationContent, publicationPicture, idUser) VALUES ("${publicationDate}", "${dataReqBodyPublication.publicationContent}", "${dataReqFile}", "${req.params.id}")`,
         function (error, results, fields) {
           if (error) {
             console.log(error);
@@ -58,9 +62,13 @@ exports.addPublication = function (req, res, next) {
   }
   // CAS 2 : Il y a une image mais pas de message
   else if (req.file && !req.body.publication) {
+    // Récupération de l'image dans req.file.filename
+    const dataReqFile = `${req.protocol}://${req.get("host")}/images/${
+      req.file.filename
+    }`;
     // Requête SQL pour envoyer les données dans la base de données
     mysqlConnection.query(
-      `INSERT INTO publications (publicationDate, publicationPicture, idUser) VALUES ("${publicationDate}", "${req.file.originalname}", "${req.params.id}")`,
+      `INSERT INTO publications (publicationDate, publicationPicture, idUser) VALUES ("${publicationDate}", "${dataReqFile}", "${req.params.id}")`,
       function (error, results, fields) {
         if (error) {
           console.log(error);
