@@ -182,7 +182,7 @@ exports.updateUserData = function (req, res, next) {
           .status(400)
           .json({ message: "Une erreur est survenue ! 😅", error });
       } else {
-        // Création d'un objet 'dataDatbase' contenant les données de l'utilisateur provenant de la base de données
+        // Création d'un objet 'dataDatabase' contenant les données de l'utilisateur provenant de la base de données
         const dataDatabase = {
           lastName: results[0].lastName,
           firstName: results[0].firstName,

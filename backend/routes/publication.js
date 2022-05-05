@@ -13,6 +13,8 @@ const router = express.Router();
 router.post("/:id", multer, publicationCtrl.addPublication);
 // Route pour voir toute les publications
 router.get("/", publicationCtrl.seeAllPublications);
+// Route pour modifier une publication
+router.put("/:id", multer, publicationCtrl.updatePublication);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router
