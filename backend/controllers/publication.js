@@ -260,3 +260,39 @@ exports.updatePublication = function (req, res, next) {
     }
   );
 };
+
+// SUPPRIMER UNE PUBLICATION : Middleware pour supprimer une publication
+exports.deletePublication = function (req, res, next) {
+  // Requête SQL pour récupérer les données de la publication dans la base de données
+  mysqlConnection.query(
+    `SELECT idPublication, users.idUser, firstName, lastName, profilePicture, CAST(publicationDate AS CHAR) AS publicationDate, publicationPicture, publicationContent FROM users INNER JOIN publications ON users.idUser = publications.idUser WHERE idPublication = ${req.params.id}`,
+    function (error, results, fields) {
+      if (error) {
+        res
+          .status(400)
+          .json({ message: "Une erreur est survenue ! 😅", error });
+      } else {
+        // Récupération de la photo à ne pas sauvegarder côté serveur
+        const pictureToDelete =
+          results[0].publicationPicture.split("/images")[1];
+        // Requête SQL pour supprimer les données de la publication dans la base de données
+        mysqlConnection.query(
+          `DELETE FROM publications WHERE idPublication = "${req.params.id}"`,
+          function (error, results, fields) {
+            if (error) {
+              res
+                .status(400)
+                .json({ message: "Une erreur est survenue ! 😅", error });
+            } else {
+              res
+                .status(200)
+                .json({ message: "La publication a été supprimé ! 😭" });
+              // Suppression de l'image dans le dossier 'images' du serveur
+              fs.removeSync(`images/${pictureToDelete}`);
+            }
+          }
+        );
+      }
+    }
+  );
+};
