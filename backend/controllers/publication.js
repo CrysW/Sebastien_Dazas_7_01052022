@@ -272,26 +272,44 @@ exports.deletePublication = function (req, res, next) {
           .status(400)
           .json({ message: "Une erreur est survenue ! 😅", error });
       } else {
-        // Récupération de la photo à ne pas sauvegarder côté serveur
-        const pictureToDelete =
-          results[0].publicationPicture.split("/images")[1];
-        // Requête SQL pour supprimer les données de la publication dans la base de données
-        mysqlConnection.query(
-          `DELETE FROM publications WHERE idPublication = "${req.params.id}"`,
-          function (error, results, fields) {
-            if (error) {
-              res
-                .status(400)
-                .json({ message: "Une erreur est survenue ! 😅", error });
-            } else {
-              res
-                .status(200)
-                .json({ message: "La publication a été supprimé ! 😭" });
-              // Suppression de l'image dans le dossier 'images' du serveur
-              fs.removeSync(`images/${pictureToDelete}`);
+        if (results[0].publicationPicture === null) {
+          // Requête SQL pour supprimer les données de la publication dans la base de données
+          mysqlConnection.query(
+            `DELETE FROM publications WHERE idPublication = "${req.params.id}"`,
+            function (error, results, fields) {
+              if (error) {
+                res
+                  .status(400)
+                  .json({ message: "Une erreur est survenue ! 😅", error });
+              } else {
+                res
+                  .status(200)
+                  .json({ message: "La publication a été supprimé ! 😭" });
+              }
             }
-          }
-        );
+          );
+        } else {
+          // Récupération de la photo à ne pas sauvegarder côté serveur
+          const pictureToDelete =
+            results[0].publicationPicture.split("/images")[1];
+          // Requête SQL pour supprimer les données de la publication dans la base de données
+          mysqlConnection.query(
+            `DELETE FROM publications WHERE idPublication = "${req.params.id}"`,
+            function (error, results, fields) {
+              if (error) {
+                res
+                  .status(400)
+                  .json({ message: "Une erreur est survenue ! 😅", error });
+              } else {
+                res
+                  .status(200)
+                  .json({ message: "La publication a été supprimé ! 😭" });
+                // Suppression de l'image dans le dossier 'images' du serveur
+                fs.removeSync(`images/${pictureToDelete}`);
+              }
+            }
+          );
+        }
       }
     }
   );
