@@ -122,7 +122,7 @@ exports.addPublication = function (req, res, next) {
 exports.seeAllPublications = function (req, res, next) {
   // Requête SQL pour chercher toutes les publications dans la base de données
   mysqlConnection.query(
-    `SELECT idPublication, users.idUser, firstName, lastName, profilePicture, CAST(publicationDate AS CHAR) AS publicationDate, publicationPicture, publicationContent FROM users INNER JOIN publications ON users.idUser = publications.idUser ORDER BY publicationDate DESC;`,
+    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser ORDER BY publicationDate DESC;`,
     function (error, results, fields) {
       if (error) {
         res
@@ -139,7 +139,7 @@ exports.seeAllPublications = function (req, res, next) {
 exports.updatePublication = function (req, res, next) {
   // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
-    `SELECT idPublication, users.idUser, firstName, lastName, profilePicture, CAST(publicationDate AS CHAR) AS publicationDate, publicationPicture, publicationContent FROM users INNER JOIN publications ON users.idUser = publications.idUser WHERE idPublication = "${req.params.id}"`,
+    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = "${req.params.id}"`,
     function (error, results, fields) {
       if (error) {
         res
@@ -349,7 +349,7 @@ exports.updatePublication = function (req, res, next) {
 exports.deletePublication = function (req, res, next) {
   // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
-    `SELECT idPublication, users.idUser, firstName, lastName, profilePicture, CAST(publicationDate AS CHAR) AS publicationDate, publicationPicture, publicationContent FROM users INNER JOIN publications ON users.idUser = publications.idUser WHERE idPublication = ${req.params.id}`,
+    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = ${req.params.id}`,
     function (error, results, fields) {
       if (error) {
         res
