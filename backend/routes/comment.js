@@ -10,6 +10,8 @@ const router = express.Router();
 // CREATION DES ROUTES
 // Route pour ajouter un commentaire
 router.post("/:id", commentCtrl.addComment);
+// Route pour modifier un commentaire
+router.put("/:id", commentCtrl.updateComment);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

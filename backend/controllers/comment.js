@@ -43,3 +43,45 @@ exports.addComment = function (req, res, next) {
     });
   }
 };
+
+// MODIFIER : Middleware pour modifier un commentaire
+exports.updateComment = function (req, res, next) {
+  // Requête SQL pour récupérer les données du commentaire dans la base de données
+  mysqlConnection.query(
+    `SELECT * FROM comments WHERE idComment = ${req.params.id};`,
+    function (error, results, fields) {
+      if (error) {
+        res
+          .status(400)
+          .json({ message: "Une erreur est survenue ! 😅", error });
+      } else {
+        if (
+          req.body.publicationContent.length >= 10 &&
+          req.body.publicationContent.length <= 280
+        ) {
+          // Requête pour mettre à jour les données du commentaire dans la base de données
+          mysqlConnection.query(
+            `UPDATE comments SET commentContent = "${req.body.publicationContent}" WHERE comments.idComment = "${req.params.id}";`,
+            function (error, results, fields) {
+              if (error) {
+                res
+                  .status(400)
+                  .json({ message: "Une erreur est survenue ! 😅", error });
+              } else {
+                res.status(200).json({
+                  message:
+                    "Le message a été mise à jour dans la base de données ! 🥳",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(400).json({
+            message:
+              "Le commentaire nécessite un message compris entre 10 et 280 caractères ! 😅",
+          });
+        }
+      }
+    }
+  );
+};
