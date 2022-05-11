@@ -12,6 +12,8 @@ const router = express.Router();
 router.post("/:id", commentCtrl.addComment);
 // Route pour modifier un commentaire
 router.put("/:id", commentCtrl.updateComment);
+// Route pour supprimer un commentaire
+router.delete("/:id", commentCtrl.deleteComment);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router
