@@ -44,6 +44,27 @@ exports.addComment = function (req, res, next) {
   }
 };
 
+// VOIR : Middleware pour tous les commentaires d'une publication
+exports.getAllCommentsOfOnePublication = function (req, res, next) {
+  // Requête SQL pour récupérer tous les commentaires d'une publication dans la base de données
+  mysqlConnection.query(
+    `SELECT users.idUser, users.lastName, users.firstName, users.profilePicture, comments.idComment, CAST (comments.commentDate AS CHAR) AS commentDate, comments.commentContent FROM comments INNER JOIN users ON comments.idUser = users.iduser WHERE idPublication = ${req.params.id} ORDER BY commentDate ASC`,
+    function (error, results, next) {
+      if (error) {
+        res
+          .status(400)
+          .json({ message: "Une erreur est survenue ! 😅", error });
+      } else if (results.length === 0) {
+        res.status(400).json({
+          message: `Il n'y a pas de commentaire pour la publication ${req.params.id} ! 😅`,
+        });
+      } else {
+        res.status(200).json(results);
+      }
+    }
+  );
+};
+
 // MODIFIER : Middleware pour modifier un commentaire
 exports.updateComment = function (req, res, next) {
   // Requête SQL pour récupérer les données du commentaire dans la base de données

@@ -10,6 +10,8 @@ const router = express.Router();
 // CREATION DES ROUTES
 // Route pour ajouter un commentaire
 router.post("/:id", commentCtrl.addComment);
+// Route pour voir tous les commentaires d'une publication
+router.get("/:id", commentCtrl.getAllCommentsOfOnePublication);
 // Route pour modifier un commentaire
 router.put("/:id", commentCtrl.updateComment);
 // Route pour supprimer un commentaire
