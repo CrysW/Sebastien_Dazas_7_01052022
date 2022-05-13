@@ -296,16 +296,86 @@ exports.updateUserData = function (req, res, next) {
 
 // SUPPRIMER : Middleware pour supprimer le compte de l'utilisateur
 exports.deleteAccount = function (req, res, next) {
-  // Requête SQL pour supprimer le compte de l'utilisateur dans la base de données
+  // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
-    `DELETE FROM users WHERE users.idUser = ${req.params.id}`,
+    `SELECT * FROM publications WHERE idUser = "${req.params.id}" `,
     function (error, results, fields) {
       if (error) {
         res
           .status(400)
           .json({ message: "Une erreur est survenue ! 😅", error });
       } else {
-        res.status(200).json({ message: "Votre compte a été supprimé ! 😭" });
+        // Récupération de(s) l'image(s) de(s) la publication(s) à supprimer dans le dossier 'images' du serveur
+        let dataPictureTodelete = [];
+        for (let i = 0; i < results.length; i = i + 1) {
+          if (results[i].publicationPicture !== null) {
+            dataPictureTodelete.push(
+              results[i].publicationPicture.split("images/")[1]
+            );
+          }
+        }
+        // Suppression de(s) l'image(s) de la publication(s) dans le dossier 'images' du serveur
+        for (let i = 0; i < dataPictureTodelete.length; i = i + 1) {
+          fs.removeSync(`images/${dataPictureTodelete[i]}`);
+        }
+        // Requête SQL pour récupérer les données de l'utilisateur dans la base de données
+        mysqlConnection.query(
+          `SELECT * FROM users WHERE idUser = "${req.params.id}"`,
+          function (error, results, fields) {
+            if (error) {
+              res
+                .status(400)
+                .json({ message: "Une erreur est survenue ! 😅", error });
+            } else {
+              // Récupération de l'image de profile à supprimer dans le dossier 'images' du serveur
+              const pictureProfileToDelete =
+                results[0].profilePicture.split("images/")[1];
+              // Suppression de l'image de profile dans le dossier 'images' du serveur
+              fs.removeSync(`images/${pictureProfileToDelete}`);
+              // Requête SQL pour supprimer tous les commentaires dans la base de données
+              mysqlConnection.query(
+                `DELETE FROM comments WHERE idUser = ${req.params.id};`,
+                function (error, results, fields) {
+                  if (error) {
+                    res
+                      .status(400)
+                      .json({ message: "Une erreur est survenue ! 😅", error });
+                  } else {
+                    // Requête SQL pour supprimer toutes les publications dans la base de données
+                    mysqlConnection.query(
+                      `DELETE FROM publications WHERE idUser = ${req.params.id};`,
+                      function (error, results, fields) {
+                        if (error) {
+                          res.status(400).json({
+                            message: "Une erreur est survenue ! 😅",
+                            error,
+                          });
+                        } else {
+                          // Requête SQL pour supprimer le compte utilisateur dans la base de données
+                          mysqlConnection.query(
+                            `DELETE FROM users WHERE idUser = ${req.params.id};`,
+                            function (error, results, fields) {
+                              if (error) {
+                                res.status(400).json({
+                                  message: "Une erreur est survenue ! 😅",
+                                  error,
+                                });
+                              } else {
+                                res.status(200).json({
+                                  message: "Votre compte a été supprimé ! 😭",
+                                });
+                              }
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                }
+              );
+            }
+          }
+        );
       }
     }
   );
