@@ -189,7 +189,30 @@ exports.updatePublication = function (req, res, next) {
               });
             }
           }
-          // CAS 2 : Il y a un message à mettre à jour uniquement
+          // CAS 2 : Il y a une image à mettre à jour uniquement
+          else if (req.file && !req.body.publication) {
+            // Récupération de l'image dans req.file.filename
+            const dataReqFile = `${req.protocol}://${req.get("host")}/images/${
+              req.file.filename
+            }`;
+            // Requête SQL pour mettre à jour les données dans la base de données
+            mysqlConnection.query(
+              `UPDATE publications SET publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${req.params.id}";`,
+              function (error, results, fields) {
+                if (error) {
+                  res
+                    .status(400)
+                    .json({ message: "Une erreur est survenue ! 😅", error });
+                } else {
+                  res.status(200).json({
+                    message:
+                      "L'image a été mises à jour dans la base de données ! 🥳",
+                  });
+                }
+              }
+            );
+          }
+          // CAS 3 : Il y a un message à mettre à jour uniquement
           else if (!req.file && req.body.publication) {
             // Récupération des données contenues dans req.body.publication
             const dataReqBodyPublication = JSON.parse(req.body.publication);
@@ -220,7 +243,7 @@ exports.updatePublication = function (req, res, next) {
               });
             }
           }
-          // CAS 3 : Il n'y a pas d'image ou de message à mettre à jour
+          // CAS 4 : Il n'y a pas d'image ou de message à mettre à jour
           else if (!req.file && !req.body.publication) {
             res.status(200).json({
               message: "Aucunes données n'a besoin d'être mises à jour ! 🥳",
