@@ -24,7 +24,7 @@ exports.addComment = function (req, res, next) {
   ) {
     // Requête pour envoyer les données dans la base de données
     mysqlConnection.query(
-      `INSERT INTO comments (commentDate, commentContent, idUser, idPublication) VALUES("${commentDate}", "${req.body.commentContent}", "${req.params.id}", "${req.body.idPublication}")`,
+      `INSERT INTO comments (commentDate, commentContent, idUser, idPublication) VALUES("${commentDate}", "${req.body.commentContent}", "${req.body.idUser}", "${req.body.idPublication}")`,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -48,7 +48,7 @@ exports.addComment = function (req, res, next) {
 exports.getAllCommentsOfOnePublication = function (req, res, next) {
   // Requête SQL pour récupérer tous les commentaires d'une publication dans la base de données
   mysqlConnection.query(
-    `SELECT users.idUser, users.lastName, users.firstName, users.profilePicture, comments.idComment, CAST (comments.commentDate AS CHAR) AS commentDate, comments.commentContent FROM comments INNER JOIN users ON comments.idUser = users.iduser WHERE idPublication = ${req.params.id} ORDER BY commentDate ASC`,
+    `SELECT users.idUser, users.lastName, users.firstName, users.profilePicture, comments.idComment, CAST (comments.commentDate AS CHAR) AS commentDate, comments.commentContent FROM comments INNER JOIN users ON comments.idUser = users.iduser WHERE idPublication = ${req.body.idPublication} ORDER BY commentDate ASC`,
     function (error, results, next) {
       if (error) {
         res
@@ -56,7 +56,7 @@ exports.getAllCommentsOfOnePublication = function (req, res, next) {
           .json({ message: "Une erreur est survenue ! 😅", error });
       } else if (results.length === 0) {
         res.status(400).json({
-          message: `Il n'y a pas de commentaire pour la publication ${req.params.id} ! 😅`,
+          message: `Il n'y a pas de commentaire pour la publication ${req.body.idPublication} ! 😅`,
         });
       } else {
         res.status(200).json(results);
@@ -69,7 +69,7 @@ exports.getAllCommentsOfOnePublication = function (req, res, next) {
 exports.updateComment = function (req, res, next) {
   // Requête SQL pour récupérer les données du commentaire dans la base de données
   mysqlConnection.query(
-    `SELECT * FROM comments WHERE idComment = ${req.params.id};`,
+    `SELECT * FROM comments WHERE idComment = ${req.body.idComment};`,
     function (error, results, fields) {
       if (error) {
         res
@@ -77,12 +77,12 @@ exports.updateComment = function (req, res, next) {
           .json({ message: "Une erreur est survenue ! 😅", error });
       } else {
         if (
-          req.body.publicationContent.length >= 10 &&
-          req.body.publicationContent.length <= 280
+          req.body.commentContent.length >= 10 &&
+          req.body.commentContent.length <= 280
         ) {
           // Requête pour mettre à jour les données du commentaire dans la base de données
           mysqlConnection.query(
-            `UPDATE comments SET commentContent = "${req.body.publicationContent}" WHERE comments.idComment = "${req.params.id}";`,
+            `UPDATE comments SET commentContent = "${req.body.commentContent}" WHERE comments.idComment = "${req.body.idComment}";`,
             function (error, results, fields) {
               if (error) {
                 res
@@ -111,7 +111,7 @@ exports.updateComment = function (req, res, next) {
 exports.deleteComment = function (req, res, next) {
   // Requête SQL pour supprimer les données du commentaire dans la base de données
   mysqlConnection.query(
-    `DELETE FROM comments WHERE idComment = ${req.params.id};`,
+    `DELETE FROM comments WHERE idComment = ${req.body.idComment};`,
     function (error, results, fields) {
       if (error) {
         res

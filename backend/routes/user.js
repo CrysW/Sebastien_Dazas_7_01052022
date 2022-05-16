@@ -9,6 +9,7 @@ const checkEmail = require("../middleware/checkEmail"); // Importation du middle
 const checkPassword = require("../middleware/checkPassword"); // Importation du middleware de contrôle du password 'checkPassword'
 const checkConnection = require("../middleware/checkConnection"); // Importation du middleware de limitation de connexion infructueuses
 const multer = require("../middleware/multer"); // Importation du middleware multer
+const authentication = require("../middleware/authentication"); // Importation du middleware d'authentification
 
 // CREATION DU ROUTER
 const router = express.Router();
@@ -26,19 +27,25 @@ router.post(
 // Route pour la connexion d'utilisateurs
 router.post("/login", checkConnection, userCtrl.login);
 // Route pour voir un utilisateur
-router.get("/:id", userCtrl.seeOneUser);
+router.get("/", authentication, userCtrl.seeOneUser);
 // Route pour modifier la photo de profil
-router.put("/picture/:id", multer, userCtrl.updateProfilPictureUser);
+router.put(
+  "/picture/",
+  authentication,
+  multer,
+  userCtrl.updateProfilPictureUser
+);
 // Route pour modifier les données de l'utilisateur
 router.put(
-  "/data/:id",
+  "/data/",
+  authentication,
   checkLastName,
   checkFirstName,
   checkEmail,
   userCtrl.updateUserData
 );
 // Route pour supprimer le compte de l'utilisateur
-router.delete("/:id", userCtrl.deleteAccount);
+router.delete("/", authentication, userCtrl.deleteAccount);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

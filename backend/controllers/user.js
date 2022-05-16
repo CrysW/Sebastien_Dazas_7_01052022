@@ -96,7 +96,7 @@ exports.login = function (req, res, next) {
 exports.seeOneUser = function (req, res, next) {
   // Requête SQL pour chercher l'utilisateur dans la base de données
   mysqlConnection.query(
-    `SELECT * FROM users WHERE idUser="${req.params.id}"`,
+    `SELECT * FROM users WHERE idUser="${req.body.idUser}"`,
     function (error, results, fields) {
       if (error) {
         res
@@ -111,10 +111,12 @@ exports.seeOneUser = function (req, res, next) {
 
 // MODIFIER LA PHOTO DE PROFIL DE L'UTILISATEUR : Middleware pour modifier la photo de profil de l'utilisateur
 exports.updateProfilPictureUser = function (req, res, next) {
+  // RECUPERATION DE 'idUser' DANS L'URL
+  const idUserUrl = req.originalUrl.split("=")[1];
   if (req.file) {
     // Requête SQL pour récupérer la photo de profil à supprimer dans la base de données
     mysqlConnection.query(
-      `SELECT profilePicture FROM users WHERE idUser=${req.params.id};`,
+      `SELECT profilePicture FROM users WHERE idUser=${idUserUrl};`,
       function (error, results, fields) {
         if (error) {
           res
@@ -129,7 +131,7 @@ exports.updateProfilPictureUser = function (req, res, next) {
           fs.removeSync(`images/${pictureToDelete}`);
           // Requête SQL pour mettre à jour la photo de profil dans la base de données
           mysqlConnection.query(
-            `UPDATE users SET profilePicture = "${pictureToAdd}" WHERE users.idUser = "${req.params.id}"`,
+            `UPDATE users SET profilePicture = "${pictureToAdd}" WHERE users.idUser = "${idUserUrl}"`,
             function (error, results, fields) {
               if (error) {
                 res
@@ -281,7 +283,7 @@ exports.updateUserData = function (req, res, next) {
 exports.deleteAccount = function (req, res, next) {
   // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
-    `SELECT * FROM publications WHERE idUser = "${req.params.id}" `,
+    `SELECT * FROM publications WHERE idUser = "${req.body.idUser}" `,
     function (error, results, fields) {
       if (error) {
         res
@@ -303,7 +305,7 @@ exports.deleteAccount = function (req, res, next) {
         }
         // Requête SQL pour récupérer les données de l'utilisateur dans la base de données
         mysqlConnection.query(
-          `SELECT * FROM users WHERE idUser = "${req.params.id}"`,
+          `SELECT * FROM users WHERE idUser = "${req.body.idUser}"`,
           function (error, results, fields) {
             if (error) {
               res
@@ -317,7 +319,7 @@ exports.deleteAccount = function (req, res, next) {
               fs.removeSync(`images/${pictureProfileToDelete}`);
               // Requête SQL pour supprimer tous les commentaires dans la base de données
               mysqlConnection.query(
-                `DELETE FROM comments WHERE idUser = ${req.params.id};`,
+                `DELETE FROM comments WHERE idUser = ${req.body.idUser};`,
                 function (error, results, fields) {
                   if (error) {
                     res
@@ -326,7 +328,7 @@ exports.deleteAccount = function (req, res, next) {
                   } else {
                     // Requête SQL pour supprimer toutes les publications dans la base de données
                     mysqlConnection.query(
-                      `DELETE FROM publications WHERE idUser = ${req.params.id};`,
+                      `DELETE FROM publications WHERE idUser = ${req.body.idUser};`,
                       function (error, results, fields) {
                         if (error) {
                           res.status(400).json({
@@ -336,7 +338,7 @@ exports.deleteAccount = function (req, res, next) {
                         } else {
                           // Requête SQL pour supprimer le compte utilisateur dans la base de données
                           mysqlConnection.query(
-                            `DELETE FROM users WHERE idUser = ${req.params.id};`,
+                            `DELETE FROM users WHERE idUser = ${req.body.idUser};`,
                             function (error, results, fields) {
                               if (error) {
                                 res.status(400).json({

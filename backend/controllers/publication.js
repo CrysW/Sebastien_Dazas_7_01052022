@@ -7,6 +7,8 @@ const fs = require("fs-extra"); // Importation du package file system 'fs'
 
 // PUBLIER : Middleware pour ajouter une publication
 exports.addPublication = function (req, res, next) {
+  // RECUPERATION 'idUser' DANS L'URL
+  const idUserUrl = req.originalUrl.split("=")[1];
   // RECUPERATION DE LA DATE ET DE L'HEURE
   // 1°) Récupération de la date du jour
   const currentDate = JSON.stringify(new Date());
@@ -33,7 +35,7 @@ exports.addPublication = function (req, res, next) {
     ) {
       // Requête SQL pour envoyer les données dans la base de données
       mysqlConnection.query(
-        `INSERT INTO publications (publicationDate, publicationContent, publicationPicture, idUser) VALUES ("${publicationDate}", "${dataReqBodyPublication.publicationContent}", "${dataReqFile}", "${req.params.id}")`,
+        `INSERT INTO publications (publicationDate, publicationContent, publicationPicture, idUser) VALUES ("${publicationDate}", "${dataReqBodyPublication.publicationContent}", "${dataReqFile}", "${idUserUrl}")`,
         function (error, results, fields) {
           if (error) {
             console.log(error);
@@ -68,7 +70,7 @@ exports.addPublication = function (req, res, next) {
     }`;
     // Requête SQL pour envoyer les données dans la base de données
     mysqlConnection.query(
-      `INSERT INTO publications (publicationDate, publicationPicture, idUser) VALUES ("${publicationDate}", "${dataReqFile}", "${req.params.id}")`,
+      `INSERT INTO publications (publicationDate, publicationPicture, idUser) VALUES ("${publicationDate}", "${dataReqFile}", "${idUserUrl}")`,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -91,7 +93,7 @@ exports.addPublication = function (req, res, next) {
     ) {
       // Requête SQL pour envoyer les données dans la base de données
       mysqlConnection.query(
-        `INSERT INTO publications (publicationDate, publicationContent, idUser) VALUES ("${publicationDate}", "${dataReqBodyPublication.publicationContent}", "${req.params.id}")`,
+        `INSERT INTO publications (publicationDate, publicationContent, idUser) VALUES ("${publicationDate}", "${dataReqBodyPublication.publicationContent}", "${idUserUrl}")`,
         function (error, results, fields) {
           if (error) {
             console.log(error);
@@ -137,9 +139,11 @@ exports.seeAllPublications = function (req, res, next) {
 
 // MODIFIER UNE PUBLICATION : Middleware pour modifier une publication
 exports.updatePublication = function (req, res, next) {
+  // RECUPERATION 'idPublication' DANS L'URL
+  const idPublicationUrl = req.originalUrl.split("idPublication=")[1];
   // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
-    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = "${req.params.id}"`,
+    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = "${idPublicationUrl}"`,
     function (error, results, fields) {
       if (error) {
         res
@@ -162,7 +166,7 @@ exports.updatePublication = function (req, res, next) {
             ) {
               // Requête SQL pour mettre à jour les données dans la base de données
               mysqlConnection.query(
-                `UPDATE publications SET publicationContent = "${dataReqBodyPublication.publicationContent}", publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${req.params.id}";`,
+                `UPDATE publications SET publicationContent = "${dataReqBodyPublication.publicationContent}", publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${idPublicationUrl}";`,
                 function (error, results, fields) {
                   if (error) {
                     res
@@ -197,7 +201,7 @@ exports.updatePublication = function (req, res, next) {
             }`;
             // Requête SQL pour mettre à jour les données dans la base de données
             mysqlConnection.query(
-              `UPDATE publications SET publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${req.params.id}";`,
+              `UPDATE publications SET publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${idPublicationUrl}";`,
               function (error, results, fields) {
                 if (error) {
                   res
@@ -222,7 +226,7 @@ exports.updatePublication = function (req, res, next) {
             ) {
               // Requête SQL pour mettre à jour les données dans la base de données
               mysqlConnection.query(
-                `UPDATE publications SET publicationContent = "${dataReqBodyPublication.publicationContent}" WHERE publications.idPublication = "${req.params.id}";`,
+                `UPDATE publications SET publicationContent = "${dataReqBodyPublication.publicationContent}" WHERE publications.idPublication = "${idPublicationUrl}";`,
                 function (error, results, fields) {
                   if (error) {
                     res
@@ -269,7 +273,7 @@ exports.updatePublication = function (req, res, next) {
             ) {
               // Requête SQL pour mettre à jour les données dans la base de données
               mysqlConnection.query(
-                `UPDATE publications SET publicationContent = "${dataReqBodyPublication.publicationContent}", publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${req.params.id}";`,
+                `UPDATE publications SET publicationContent = "${dataReqBodyPublication.publicationContent}", publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${idPublicationUrl}";`,
                 function (error, results, fields) {
                   if (error) {
                     res
@@ -308,7 +312,7 @@ exports.updatePublication = function (req, res, next) {
             }`;
             // Requête SQL pour mettre à jour les données dans la base de données
             mysqlConnection.query(
-              `UPDATE publications SET publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${req.params.id}";`,
+              `UPDATE publications SET publicationPicture = "${dataReqFile}" WHERE publications.idPublication = "${idPublicationUrl}";`,
               function (error, results, fields) {
                 if (error) {
                   res
@@ -335,7 +339,7 @@ exports.updatePublication = function (req, res, next) {
             ) {
               // Requête SQL pour mettre à jour les données dans la base de données
               mysqlConnection.query(
-                `UPDATE publications SET publicationContent = "${dataReqBodyPublication.publicationContent}" WHERE publications.idPublication = "${req.params.id}";`,
+                `UPDATE publications SET publicationContent = "${dataReqBodyPublication.publicationContent}" WHERE publications.idPublication = "${idPublicationUrl}";`,
                 function (error, results, fields) {
                   if (error) {
                     res
@@ -372,7 +376,7 @@ exports.updatePublication = function (req, res, next) {
 exports.deletePublication = function (req, res, next) {
   // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
-    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = ${req.params.id}`,
+    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = ${req.body.idPublication}`,
     function (error, results, fields) {
       if (error) {
         res
@@ -382,7 +386,7 @@ exports.deletePublication = function (req, res, next) {
         if (results[0].publicationPicture === null) {
           // Requête SQL pour supprimer les données de la publication dans la base de données
           mysqlConnection.query(
-            `DELETE FROM publications WHERE idPublication = "${req.params.id}"`,
+            `DELETE FROM publications WHERE idPublication = "${req.body.idPublication}"`,
             function (error, results, fields) {
               if (error) {
                 res
@@ -401,7 +405,7 @@ exports.deletePublication = function (req, res, next) {
             results[0].publicationPicture.split("/images")[1];
           // Requête SQL pour supprimer les données de la publication dans la base de données
           mysqlConnection.query(
-            `DELETE FROM publications WHERE idPublication = "${req.params.id}"`,
+            `DELETE FROM publications WHERE idPublication = "${req.body.idPublication}"`,
             function (error, results, fields) {
               if (error) {
                 res
