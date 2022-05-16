@@ -1,6 +1,7 @@
 // IMPORT(S)
 require("dotenv").config(); // Importation du package 'dotenv'
 const express = require("express"); // Importation du package 'express'
+const helmet = require("helmet"); // Importation du package 'helmet'
 const morgan = require("morgan"); // Importation du package 'morgan' (logger htpp)
 const mysql = require("./database/db"); // Importation de la connexion à la base de données mysql
 const userRoutes = require("./routes/user"); // Importation du 'router' pour le parcours des utilisateurs
@@ -9,6 +10,9 @@ const commentRoutes = require("./routes/comment"); // Importation du 'router' po
 
 // Création de l'application 'express'
 const app = express();
+
+// Utilisation de 'helmet' sur l'application 'express'
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 // Utilisation de 'morgan' pour logger les "request" et les "responses"
 app.use(morgan("dev"));
