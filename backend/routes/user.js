@@ -25,8 +25,6 @@ router.post(
 );
 // Route pour la connexion d'utilisateurs
 router.post("/login", checkConnection, userCtrl.login);
-// Route pour voir tous les utilisateurs
-router.get("/", userCtrl.seeAllUsers);
 // Route pour voir un utilisateur
 router.get("/:id", userCtrl.seeOneUser);
 // Route pour modifier la photo de profil
