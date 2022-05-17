@@ -7,6 +7,7 @@ const mysql = require("./database/db"); // Importation de la connexion à la bas
 const userRoutes = require("./routes/user"); // Importation du 'router' pour le parcours des utilisateurs
 const publicationRoutes = require("./routes/publication"); // Importation du 'router' pour le parcours des publications
 const commentRoutes = require("./routes/comment"); // Importation du 'router' pour le parcours des commentaires
+const path = require("path"); // Importation de 'path' qui donne accès au chemin de fichiers
 
 // Création de l'application 'express'
 const app = express();
@@ -33,6 +34,9 @@ app.use(function (req, res, next) {
   );
   next();
 });
+
+// Création d'un middleware qui sert le dossier image
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // Enregistrement du 'router' pour toutes les demandes effectuées
 app.use("/api/users", userRoutes);
