@@ -1,27 +1,43 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+// IMPORT(S)
+import Vue from "vue"; // Importation de "Vue"
+import VueRouter from "vue-router"; // Importation de "Vue Router"
+import SignUpView from "../views/SignUpView.vue"; // Importation de la View "SignUpView"
+import LoginView from "../views/LoginView.vue"; // Importation de la View "LoginView"
+import ProfileView from "../views/ProfileView.vue"; // Importation de la View "ProfileView"
+import HomePageView from "../views/HomePageView"; // Importation de la View "HomePageView"
 
-Vue.use(VueRouter)
+// Connexion de "VueRouter" à "Vue"
+Vue.use(VueRouter);
 
+// Configuration des différentes routes
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: "/signup",
+    name: "signup",
+    component: SignUpView,
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+    path: "/login",
+    name: "login",
+    component: LoginView,
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: ProfileView,
+  },
+  {
+    path: "/homepage",
+    name: "homepage",
+    component: HomePageView,
+  },
+];
 
+// Instantiation d'une instance de "VueRouter"
 const router = new VueRouter({
-  routes
-})
+  mode: "history",
+  routes,
+});
 
-export default router
+// EXPORT(S)
+export default router; // Exportation du router
