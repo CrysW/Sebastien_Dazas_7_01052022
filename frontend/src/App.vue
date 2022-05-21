@@ -7,6 +7,8 @@
 <style lang="scss">
 #app {
   font-family: "Raleway", sans-serif;
-  text-align: center;
+}
+body {
+  background-color: #c4c4c4;
 }
 </style>
