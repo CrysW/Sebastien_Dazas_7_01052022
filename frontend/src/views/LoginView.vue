@@ -32,6 +32,7 @@
                 <div v-if="mode == 'signup'" class="form-group">
                   <label for="lastName"></label>
                   <input
+                    v-model="lastName"
                     type="text"
                     class="form-control"
                     id="lastName"
@@ -43,6 +44,7 @@
                 <div v-if="mode == 'signup'" class="form-group">
                   <label for="firstName"></label>
                   <input
+                    v-model="firstName"
                     type="text"
                     class="form-control"
                     id="firstName"
@@ -54,6 +56,7 @@
                 <div class="form-group">
                   <label for="emailAdress"></label>
                   <input
+                    v-model="emailAdress"
                     type="email"
                     class="form-control"
                     id="emailAdress"
@@ -65,6 +68,7 @@
                 <div class="form-group">
                   <label for="password"></label>
                   <input
+                    v-model="password"
                     type="password"
                     class="form-control"
                     id="password"
@@ -90,6 +94,7 @@
               </p>
               <!-- Bouton -->
               <button
+                v-on:click="login()"
                 v-if="mode == 'login'"
                 type="submit"
                 class="btn perso-btn font-weight-bold text-white"
@@ -103,6 +108,10 @@
               >
                 S'inscrire
               </button>
+              <!-- Affichage du message d'erreur -->
+              <p class="font-italic text-center text-white">
+                {{ error }}
+              </p>
             </div>
           </div>
         </div>
@@ -112,23 +121,74 @@
 </template>
 
 <script>
+// IMPORT(S)
+import axios from "axios"; // Importation du package "axios"
+
+// EXPORT(S)
 export default {
   // Nom du composant
   name: "LoginView",
-  // Fonction qui permet de retourner les données
+  // Fonction qui permet de retourner les variables
   data: function () {
     return {
       mode: "login",
+      emailAdress: "",
+      password: "",
+      error: "",
     };
   },
   methods: {
     // Fonction qui permet de 'switcher" vers la vue en mode 'inscription'
-    switchToCreateAccount() {
+    switchToCreateAccount: function () {
       this.mode = "signup";
     },
     // Fonction qui permet de 'switcher' vers la vue en mode 'connexion'
-    switchToLogin() {
+    switchToLogin: function () {
       this.mode = "login";
+    },
+    // Fonction qui permet de se connecter
+    login: function () {
+      // Requête axios pour connecter l'utilisateur
+      axios
+        .post("http://localhost:3000/api/users/login", {
+          emailAdress: this.emailAdress,
+          password: this.password,
+        })
+        .then((response) => {
+          // Affichage dans la console de la reponse
+          console.log("---> LA REQUETE A REUSSI => Contenu de 'response.data'");
+          console.log(response.data);
+          // Création d'un objet 'user' contenant les données de la requête 'post'
+          const user = response.data;
+          // Sauvegarde des données de l'utilisateur dans le localStorage
+          localStorage.setItem("user", JSON.stringify(user));
+          // Navigation vers la page d'accueil
+          this.$router.push("/homepage");
+        })
+        .catch((error) => {
+          // Affichage dans la console de l'erreur
+          console.log("---> LA REQUETE A ECHOUE => Contenu de 'error'");
+          console.log(error);
+          if (error.response) {
+            if (error.response.data.message) {
+              // Affichage dans la console du message d'erreur provenant du backend
+              console.log(
+                "---> MESSAGE D'ERREUR PROVENANT DU BACKEND => Contenu de 'error.response.data.message'"
+              );
+              console.log(error.response.data.message);
+              // Message d'erreur qui sera affiché sur le frontend
+              this.error = error.response.data.message;
+            } else if (error.response.data) {
+              // Affichage dans la console du message d'erreur provenant du backend
+              console.log(
+                "---> MESSAGE D'ERREUR PROVENANT DU BACKEND => Contenu de 'error.response.data.message'"
+              );
+              console.log(error.response.data);
+              // Message d'erreur qui sera affiché sur le frontend
+              this.error = error.response.data;
+            }
+          }
+        });
     },
   },
 };
