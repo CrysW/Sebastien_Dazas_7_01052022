@@ -102,6 +102,7 @@
                 Se connecter
               </button>
               <button
+                v-on:click="signup()"
                 v-else
                 type="submit"
                 class="btn perso-btn font-weight-bold text-white"
@@ -132,6 +133,8 @@ export default {
   data: function () {
     return {
       mode: "login",
+      firstName: "",
+      lastName: "",
       emailAdress: "",
       password: "",
       error: "",
@@ -187,6 +190,39 @@ export default {
               // Message d'erreur qui sera affiché sur le frontend
               this.error = error.response.data;
             }
+          }
+        });
+    },
+    // Fonction qui permet de s'inscrire
+    signup: function () {
+      const mySelf = this;
+      // Requête axios pour inscrire un utilisateur
+      axios
+        .post("http://localhost:3000/api/users/signup", {
+          lastName: this.lastName,
+          firstName: this.firstName,
+          emailAdress: this.emailAdress,
+          password: this.password,
+        })
+        .then((response) => {
+          // Affichage dans la console de la reponse
+          console.log("---> LA REQUETE A REUSSI => Contenu de 'response.data'");
+          console.log(response.data);
+          // Connexion de l'utilisateur
+          mySelf.login();
+        })
+        .catch((error) => {
+          // Affichage dans la console de l'erreur
+          console.log("---> LA REQUETE A ECHOUE => Contenu de 'error'");
+          console.log(error);
+          if (error.response) {
+            // Affichage dans la console du message d'erreur provenant du backend
+            console.log(
+              "---> MESSAGE D'ERREUR PROVENANT DU BACKEND => Contenu de 'error.response.data.message'"
+            );
+            console.log(error.response.data.message);
+            // Message d'erreur qui sera affiché sur le frontend
+            this.error = error.response.data.message;
           }
         });
     },
