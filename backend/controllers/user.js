@@ -25,9 +25,10 @@ exports.signup = function (req, res, next) {
         function (error, results, fields) {
           if (error) {
             console.log(error);
-            res
-              .status(400)
-              .json({ message: "Une erreur est survenue ! 😅", error });
+            res.status(400).json({
+              message: `L'adresse email '${user.emailAdress}' existe déjà dans la base de données ! 😅`,
+              error,
+            });
           } else {
             res.status(201).json({ message: "L'utilisateur a été crée ! 🥳" });
           }
