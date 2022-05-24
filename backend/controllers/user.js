@@ -97,7 +97,7 @@ exports.login = function (req, res, next) {
 exports.seeOneUser = function (req, res, next) {
   // Requête SQL pour chercher l'utilisateur dans la base de données
   mysqlConnection.query(
-    `SELECT * FROM users WHERE idUser="${req.body.idUser}"`,
+    `SELECT * FROM users WHERE idUser="${req.params.id}"`,
     function (error, results, fields) {
       if (error) {
         res

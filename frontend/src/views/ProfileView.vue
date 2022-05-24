@@ -20,6 +20,7 @@
                   >Status</label
                 >
                 <input
+                  v-model="isAdministrator"
                   type="text"
                   class="perso-status form-control text-center font-weight-bold"
                   id="status"
@@ -38,6 +39,7 @@
                     >Nom</label
                   >
                   <input
+                    v-model="lastName"
                     type="text"
                     class="form-control"
                     id="lastName"
@@ -51,6 +53,7 @@
                     >Prénom</label
                   >
                   <input
+                    v-model="firstName"
                     type="text"
                     class="form-control"
                     id="firstName"
@@ -64,6 +67,7 @@
                     >Adresse email</label
                   >
                   <input
+                    v-model="emailAdress"
                     type="email"
                     class="form-control"
                     id="emailAdress"
@@ -77,6 +81,7 @@
                     >Mot de passe</label
                   >
                   <input
+                    v-model="password"
                     type="password"
                     class="form-control"
                     id="password"
@@ -125,12 +130,68 @@
 <script>
 // IMPORT(S)
 import Header from "../components/HeaderComponent.vue"; // Importation du composant "HeaderComponent"
+import axios from "axios"; // Importation du package "axios"
 
 // EXPORT(S)
 export default {
   name: "ProfileView",
+  // Utilisation des composants
   components: {
     Header,
+  },
+  // Fonction qui permet de retourner les variables
+  data: function () {
+    return {
+      isAdministrator: "",
+      lastName: "",
+      firstName: "",
+      emailAdress: "",
+      password: "",
+    };
+  },
+  // Hooks de cycle de vie : Appelé juste après que l'instance a été montée
+  mounted() {
+    // Récupération de 'user' dans le localStorage
+    const userLocalStorage = localStorage.getItem("user");
+    console.log("---> Contenu de 'userLocalStorage'");
+    console.log(userLocalStorage);
+    // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
+    const userLocalStorageToObject = JSON.parse(userLocalStorage);
+    console.log("---> Contenu de 'userLocalStorageToObject'");
+    console.log(userLocalStorageToObject);
+    // Récupération de 'idUser'
+    const idUser = userLocalStorageToObject.idUser;
+    console.log("---> Récupération de 'idUser'");
+    console.log(idUser);
+    // Requête axios pour récupérer les données de l'utilisateurs
+    axios
+      .get(`http://localhost:3000/api/users/${idUser}`)
+      .then((response) => {
+        // Affichage dans la console de la reponse
+        console.log(
+          "---> LA REQUETE A REUSSI => Contenu de 'response.data[0]'"
+        );
+        console.log(response.data[0]);
+        // Pour l'affichage du lastName
+        this.lastName = response.data[0].lastName;
+        // Pour l'affichage du firstName
+        this.firstName = response.data[0].firstName;
+        // Pour l'affichage de l'adresse email
+        this.emailAdress = response.data[0].emailAdress;
+        // Pour l'affichage du mot de passe
+        this.password = response.data[0].password;
+        // Pour l'affichage du statut de l'utilisateur
+        if (response.data[0].isAdministrator == 0) {
+          this.isAdministrator = "Statut utilisateur";
+        } else {
+          this.isAdministrator = "Statut administrateur";
+        }
+      })
+      .catch((error) => {
+        // Affichage dans la console de l'erreur
+        console.log("---> LA REQUETE A ECHOUE => Contenu de 'error'");
+        console.log(error);
+      });
   },
 };
 </script>
