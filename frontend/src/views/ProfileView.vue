@@ -45,7 +45,6 @@
                     id="lastName"
                     aria-describedby="lastName"
                     placeholder="Nom de l'utilisateur"
-                    readonly="readonly"
                   />
                 </div>
                 <!-- Prénom de l'utilisateur -->
@@ -60,7 +59,6 @@
                     id="firstName"
                     aria-describedby="firstName"
                     placeholder="Prénom de l'utilisateur"
-                    readonly="readonly"
                   />
                 </div>
                 <!-- Adresse email de l'utilisateur -->
@@ -75,7 +73,6 @@
                     id="emailAdress"
                     aria-describedby="emailAdress"
                     placeholder="Adresse email de l'utilisateur"
-                    readonly="readonly"
                   />
                 </div>
                 <!-- Mot de passe de l'utilisateur -->
@@ -90,7 +87,6 @@
                     id="password"
                     aria-describedby="password"
                     placeholder="Mot de passe de l'utilisateur"
-                    readonly="readonly"
                   />
                 </div>
               </form>
@@ -112,7 +108,10 @@
                 />
               </form>
               <!-- Bouton "supprimer le compte"-->
-              <form @submit="submitForm" class="d-flex justify-content-center">
+              <form
+                v-on:submit="submitForm"
+                class="d-flex justify-content-center"
+              >
                 <button
                   type="submit"
                   class="btn perso-btn font-weight-bold text-white"
@@ -121,7 +120,11 @@
                 </button>
               </form>
               <!-- Bouton "enregister"-->
-              <form @submit="submitForm" class="d-flex justify-content-center">
+              <form
+                v-on:submit="submitForm"
+                v-on:click="updateUserData()"
+                class="d-flex justify-content-center"
+              >
                 <button
                   type="submit"
                   class="btn perso-btn font-weight-bold text-white"
@@ -207,6 +210,7 @@ export default {
       });
   },
   methods: {
+    // Fonction qui permet de mettre à jour la photo de profile
     updateProfilPictureUser: function (event) {
       // Récupération de 'user' dans le localStorage
       const userLocalStorage = localStorage.getItem("user");
@@ -261,6 +265,50 @@ export default {
           console.log(error);
         });
     },
+    // Fonction qui permet de mettre à jour les données de l'utilisateur
+    updateUserData: function () {
+      console.log("coucou");
+      // Récupération de 'user' dans le localStorage
+      const userLocalStorage = localStorage.getItem("user");
+      console.log("---> Contenu de 'userLocalStorage'");
+      console.log(userLocalStorage);
+      // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
+      const userLocalStorageToObject = JSON.parse(userLocalStorage);
+      console.log("---> Contenu de 'userLocalStorageToObject'");
+      console.log(userLocalStorageToObject);
+
+      // Récupération de 'idUser'
+      const idUser = userLocalStorageToObject.idUser;
+      console.log("---> Récupération de 'idUser'");
+      console.log(idUser);
+      // Récupération du 'token'
+      const token = userLocalStorageToObject.token;
+      console.log("---> Récupération du 'token'");
+      console.log(token);
+
+      // Requête axios pour modifier les données de l'utilisateur
+      axios
+        .put(`http://localhost:3000/api/users/data/${idUser}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          lastName: this.lastName,
+          firstName: this.firstName,
+          emailAdress: this.emailAdress,
+          password: this.password,
+        })
+        .then((response) => {
+          // Affichage dans la console de la reponse
+          console.log(response);
+          // Rechargement de la page
+          window.location.reload();
+        })
+        .catch((error) => {
+          // Affichage dans la console de l'erreur'
+          console.log(error);
+        });
+    },
+    // Fonction qui permet d'empêcher la soumission du formulaire
     submitForm(e) {
       e.preventDefault();
     },

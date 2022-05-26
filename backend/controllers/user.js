@@ -112,7 +112,7 @@ exports.seeOneUser = function (req, res, next) {
 
 // MODIFIER LA PHOTO DE PROFIL DE L'UTILISATEUR : Middleware pour modifier la photo de profil de l'utilisateur
 exports.updateProfilPictureUser = function (req, res, next) {
-  // RECUPERATION DE 'idUser' DANS L'URL
+  // Récupération 'idUser' dans l'url
   const idUserUrl = req.params.id;
   if (req.file) {
     // Requête SQL pour récupérer la photo de profil à supprimer dans la base de données
@@ -160,9 +160,11 @@ exports.updateProfilPictureUser = function (req, res, next) {
 
 // MODIFIER LES DONNEES DE L'UTILISATEUR : Middleware pour modifier les données de l'utilisateur
 exports.updateUserData = function (req, res, next) {
+  // Récupération 'idUser' dans l'url
+  const idUserUrl = req.params.id;
   // Requête SQL pour récupérer des données de l'utilisateur dans la base de données
   mysqlConnection.query(
-    `SELECT * FROM users WHERE idUser="${req.body.idUser}"`,
+    `SELECT * FROM users WHERE idUser="${idUserUrl}"`,
     function (error, results, fields) {
       if (error) {
         res
@@ -197,7 +199,7 @@ exports.updateUserData = function (req, res, next) {
           // MISE A JOUR DU LAST NAME
           // Requête SQL pour mettre à jour le 'lastName' dans la base de données
           mysqlConnection.query(
-            `UPDATE users SET lastName = "${dataRequest.lastName}" WHERE users.idUser = "${req.body.idUser}"`,
+            `UPDATE users SET lastName = "${dataRequest.lastName}" WHERE users.idUser = "${idUserUrl}"`,
             function (error, results, fields) {
               if (error) {
                 res
@@ -215,7 +217,7 @@ exports.updateUserData = function (req, res, next) {
           // MISE A JOUR DU FIRST NAME
           // Requête SQL pour mettre à jour le 'firstName' dans la base de données
           mysqlConnection.query(
-            `UPDATE users SET firstName = "${dataRequest.firstName}" WHERE users.idUser = "${req.body.idUser}"`,
+            `UPDATE users SET firstName = "${dataRequest.firstName}" WHERE users.idUser = "${idUserUrl}"`,
             function (error, results, fields) {
               if (error) {
                 res
@@ -233,7 +235,7 @@ exports.updateUserData = function (req, res, next) {
           // MISE A JOUR DE L'ADRESSE EMAIL
           // Requête SQL pour mettre à jour 'emailAdress' dans la base de données
           mysqlConnection.query(
-            `UPDATE users SET emailAdress = "${dataRequest.emailAdress}" WHERE users.idUser = "${req.body.idUser}"`,
+            `UPDATE users SET emailAdress = "${dataRequest.emailAdress}" WHERE users.idUser = "${idUserUrl}"`,
             function (error, results, fields) {
               if (error) {
                 res
@@ -257,7 +259,7 @@ exports.updateUserData = function (req, res, next) {
               const hashedPassword = hash;
               // Requête SQL pour mettre à jour le 'password' dans la base de données
               mysqlConnection.query(
-                `UPDATE users SET password = "${hashedPassword}" WHERE users.idUser = "${req.body.idUser}"`,
+                `UPDATE users SET password = "${hashedPassword}" WHERE users.idUser = "${idUserUrl}"`,
                 function (error, results, fields) {
                   if (error) {
                     res

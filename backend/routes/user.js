@@ -32,8 +32,7 @@ router.get("/:id", userCtrl.seeOneUser);
 router.put("/picture/:id", multer, userCtrl.updateProfilPictureUser);
 // Route pour modifier les données de l'utilisateur
 router.put(
-  "/data/",
-  authentication,
+  "/data/:id",
   checkLastName,
   checkFirstName,
   checkEmail,
