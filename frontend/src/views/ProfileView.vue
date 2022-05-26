@@ -11,7 +11,7 @@
               <!-- Photo de profil -->
               <img
                 class="perso-profil-picture"
-                src="../assets/user-icon.jpg"
+                v-bind:src="profilePicture"
                 alt="photo de profil"
               />
               <!-- Status -->
@@ -45,6 +45,7 @@
                     id="lastName"
                     aria-describedby="lastName"
                     placeholder="Nom de l'utilisateur"
+                    readonly="readonly"
                   />
                 </div>
                 <!-- Prénom de l'utilisateur -->
@@ -59,6 +60,7 @@
                     id="firstName"
                     aria-describedby="firstName"
                     placeholder="Prénom de l'utilisateur"
+                    readonly="readonly"
                   />
                 </div>
                 <!-- Adresse email de l'utilisateur -->
@@ -73,6 +75,7 @@
                     id="emailAdress"
                     aria-describedby="emailAdress"
                     placeholder="Adresse email de l'utilisateur"
+                    readonly="readonly"
                   />
                 </div>
                 <!-- Mot de passe de l'utilisateur -->
@@ -87,6 +90,7 @@
                     id="password"
                     aria-describedby="password"
                     placeholder="Mot de passe de l'utilisateur"
+                    readonly="readonly"
                   />
                 </div>
               </form>
@@ -94,27 +98,33 @@
               <div class="liseret"></div>
               <!-- Bouton "modifier la photo"-->
               <form class="d-flex justify-content-center">
-                <button
-                  type="submit"
-                  class="btn perso-btn perso-btn perso-btn font-weight-bold text-white"
+                <label
+                  for="file"
+                  class="btn perso-btn font-weight-bold text-white"
+                  >Modifier la photo</label
                 >
-                  Modifier la photo
-                </button>
+                <input
+                  v-on:change="updateProfilPictureUser"
+                  type="file"
+                  class="d-none"
+                  accept="image/*"
+                  id="file"
+                />
               </form>
               <!-- Bouton "supprimer le compte"-->
-              <form class="d-flex justify-content-center">
+              <form @submit="submitForm" class="d-flex justify-content-center">
                 <button
                   type="submit"
-                  class="btn perso-btn perso-btn perso-btn font-weight-bold text-white"
+                  class="btn perso-btn font-weight-bold text-white"
                 >
                   Supprimer le compte
                 </button>
               </form>
               <!-- Bouton "enregister"-->
-              <form class="d-flex justify-content-center">
+              <form @submit="submitForm" class="d-flex justify-content-center">
                 <button
                   type="submit"
-                  class="btn perso-btn perso-btn perso-btn font-weight-bold text-white"
+                  class="btn perso-btn font-weight-bold text-white"
                 >
                   Enregistrer
                 </button>
@@ -142,6 +152,7 @@ export default {
   // Fonction qui permet de retourner les variables
   data: function () {
     return {
+      profilePicture: "",
       isAdministrator: "",
       lastName: "",
       firstName: "",
@@ -172,6 +183,8 @@ export default {
           "---> LA REQUETE A REUSSI => Contenu de 'response.data[0]'"
         );
         console.log(response.data[0]);
+        // Pour l'affichage de l'image
+        this.profilePicture = response.data[0].profilePicture;
         // Pour l'affichage du lastName
         this.lastName = response.data[0].lastName;
         // Pour l'affichage du firstName
@@ -192,6 +205,65 @@ export default {
         console.log("---> LA REQUETE A ECHOUE => Contenu de 'error'");
         console.log(error);
       });
+  },
+  methods: {
+    updateProfilPictureUser: function (event) {
+      // Récupération de 'user' dans le localStorage
+      const userLocalStorage = localStorage.getItem("user");
+      console.log("---> Contenu de 'userLocalStorage'");
+      console.log(userLocalStorage);
+      // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
+      const userLocalStorageToObject = JSON.parse(userLocalStorage);
+      console.log("---> Contenu de 'userLocalStorageToObject'");
+      console.log(userLocalStorageToObject);
+
+      // Récupération de 'idUser'
+      const idUser = userLocalStorageToObject.idUser;
+      console.log("---> Récupération de 'idUser'");
+      console.log(idUser);
+      // Récupération du 'token'
+      const token = userLocalStorageToObject.token;
+      console.log("---> Récupération du 'token'");
+      console.log(token);
+
+      // Récupération du fichier
+      console.log("---> Récupération du fichier");
+      console.log(event.target.files[0]);
+      // Pour l'affichage de l'image
+      this.profilePicture = event.target.files[0];
+      // Implémentation d'un objet "FormData"
+      let formData = new FormData();
+      console.log("---> Contenu de 'formData' avant l'ajout de l'image");
+      console.log(formData);
+      // Ajout du fichier dans "formData"
+      formData.append("image", this.profilePicture);
+      console.log("---> Contenu de 'formData' après l'ajout de l'image");
+      console.log(formData);
+
+      // Requête axios pour modifier la photo de l'utilisateur
+      axios
+        .put(`http://localhost:3000/api/users/picture/${idUser}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((response) => {
+          // Affichage dans la console de la reponse
+          console.log(response);
+          // Pour l'affichage de l'image
+          this.profilePicture = response.data.profilePicture;
+          // Rechargement de la page
+          window.location.reload();
+        })
+        .catch((error) => {
+          // Affichage dans la console de l'erreur'
+          console.log(error);
+        });
+    },
+    submitForm(e) {
+      e.preventDefault();
+    },
   },
 };
 </script>

@@ -29,12 +29,7 @@ router.post("/login", checkConnection, userCtrl.login);
 // Route pour voir un utilisateur
 router.get("/:id", userCtrl.seeOneUser);
 // Route pour modifier la photo de profil
-router.put(
-  "/picture/",
-  authentication,
-  multer,
-  userCtrl.updateProfilPictureUser
-);
+router.put("/picture/:id", multer, userCtrl.updateProfilPictureUser);
 // Route pour modifier les données de l'utilisateur
 router.put(
   "/data/",

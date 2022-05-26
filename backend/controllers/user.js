@@ -113,7 +113,7 @@ exports.seeOneUser = function (req, res, next) {
 // MODIFIER LA PHOTO DE PROFIL DE L'UTILISATEUR : Middleware pour modifier la photo de profil de l'utilisateur
 exports.updateProfilPictureUser = function (req, res, next) {
   // RECUPERATION DE 'idUser' DANS L'URL
-  const idUserUrl = req.originalUrl.split("=")[1];
+  const idUserUrl = req.params.id;
   if (req.file) {
     // Requête SQL pour récupérer la photo de profil à supprimer dans la base de données
     mysqlConnection.query(
@@ -142,6 +142,7 @@ exports.updateProfilPictureUser = function (req, res, next) {
                 res.status(200).json({
                   message:
                     "La photo de profil a été mises à jour dans la base de données ! 🥳",
+                  profilePicture: pictureToAdd,
                 });
               }
             }
