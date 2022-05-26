@@ -39,7 +39,7 @@ router.put(
   userCtrl.updateUserData
 );
 // Route pour supprimer le compte de l'utilisateur
-router.delete("/", authentication, userCtrl.deleteAccount);
+router.delete("/:id", userCtrl.deleteAccount);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

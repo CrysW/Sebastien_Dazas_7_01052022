@@ -110,11 +110,12 @@
               <!-- Bouton "supprimer le compte"-->
               <form
                 v-on:submit="submitForm"
+                v-on:click="deleteAccount()"
                 class="d-flex justify-content-center"
               >
                 <button
                   type="submit"
-                  class="btn perso-btn font-weight-bold text-white"
+                  class="btn perso-btn perso-btn-danger font-weight-bold text-white"
                 >
                   Supprimer le compte
                 </button>
@@ -267,7 +268,6 @@ export default {
     },
     // Fonction qui permet de mettre à jour les données de l'utilisateur
     updateUserData: function () {
-      console.log("coucou");
       // Récupération de 'user' dans le localStorage
       const userLocalStorage = localStorage.getItem("user");
       console.log("---> Contenu de 'userLocalStorage'");
@@ -307,6 +307,46 @@ export default {
           // Affichage dans la console de l'erreur'
           console.log(error);
         });
+    },
+    // Fonction qui permet de supprimer le compte de l'utilisateur
+    deleteAccount: function () {
+      // Récupération de 'user' dans le localStorage
+      const userLocalStorage = localStorage.getItem("user");
+      console.log("---> Contenu de 'userLocalStorage'");
+      console.log(userLocalStorage);
+      // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
+      const userLocalStorageToObject = JSON.parse(userLocalStorage);
+      console.log("---> Contenu de 'userLocalStorageToObject'");
+      console.log(userLocalStorageToObject);
+
+      // Récupération de 'idUser'
+      const idUser = userLocalStorageToObject.idUser;
+      console.log("---> Récupération de 'idUser'");
+      console.log(idUser);
+      // Récupération du 'token'
+      const token = userLocalStorageToObject.token;
+      console.log("---> Récupération du 'token'");
+      console.log(token);
+
+      // Requête axios pour supprimer les données de l'utilisateur
+      axios
+        .delete(`http://localhost:3000/api/users/${idUser}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          // Affichage dans la console de la reponse
+          console.log(response);
+        })
+        .catch((error) => {
+          // Affichage dans la console de l'erreur'
+          console.log(error);
+        });
+      // Suppression des données du localStorage
+      localStorage.clear();
+      // Navigation vers la page de connexion
+      this.$router.push("/");
     },
     // Fonction qui permet d'empêcher la soumission du formulaire
     submitForm(e) {
@@ -356,5 +396,13 @@ h1 {
   background-color: #d1515a;
   width: 75%;
   margin-bottom: 30px;
+  transform: scale(1);
+  transition-property: transform;
+  transition-duration: 250ms;
+}
+.perso-btn-danger:hover {
+  background-color: #ff0000 !important;
+  color: black !important;
+  transform: scale(1.2);
 }
 </style>

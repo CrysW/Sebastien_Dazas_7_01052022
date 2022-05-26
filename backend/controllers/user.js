@@ -285,9 +285,11 @@ exports.updateUserData = function (req, res, next) {
 
 // SUPPRIMER : Middleware pour supprimer le compte de l'utilisateur
 exports.deleteAccount = function (req, res, next) {
+  // Récupération 'idUser' dans l'url
+  const idUserUrl = req.params.id;
   // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
-    `SELECT * FROM publications WHERE idUser = "${req.body.idUser}" `,
+    `SELECT * FROM publications WHERE idUser = "${idUserUrl}" `,
     function (error, results, fields) {
       if (error) {
         res
@@ -309,7 +311,7 @@ exports.deleteAccount = function (req, res, next) {
         }
         // Requête SQL pour récupérer les données de l'utilisateur dans la base de données
         mysqlConnection.query(
-          `SELECT * FROM users WHERE idUser = "${req.body.idUser}"`,
+          `SELECT * FROM users WHERE idUser = "${idUserUrl}"`,
           function (error, results, fields) {
             if (error) {
               res
@@ -323,7 +325,7 @@ exports.deleteAccount = function (req, res, next) {
               fs.removeSync(`images/${pictureProfileToDelete}`);
               // Requête SQL pour supprimer tous les commentaires dans la base de données
               mysqlConnection.query(
-                `DELETE FROM comments WHERE idUser = ${req.body.idUser};`,
+                `DELETE FROM comments WHERE idUser = ${idUserUrl};`,
                 function (error, results, fields) {
                   if (error) {
                     res
@@ -332,7 +334,7 @@ exports.deleteAccount = function (req, res, next) {
                   } else {
                     // Requête SQL pour supprimer toutes les publications dans la base de données
                     mysqlConnection.query(
-                      `DELETE FROM publications WHERE idUser = ${req.body.idUser};`,
+                      `DELETE FROM publications WHERE idUser = ${idUserUrl};`,
                       function (error, results, fields) {
                         if (error) {
                           res.status(400).json({
@@ -342,7 +344,7 @@ exports.deleteAccount = function (req, res, next) {
                         } else {
                           // Requête SQL pour supprimer le compte utilisateur dans la base de données
                           mysqlConnection.query(
-                            `DELETE FROM users WHERE idUser = ${req.body.idUser};`,
+                            `DELETE FROM users WHERE idUser = ${idUserUrl};`,
                             function (error, results, fields) {
                               if (error) {
                                 res.status(400).json({
