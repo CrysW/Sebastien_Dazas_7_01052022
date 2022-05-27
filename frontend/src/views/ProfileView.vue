@@ -17,7 +17,7 @@
               <!-- Status -->
               <div class="form-group">
                 <label for="status" class="text-white font-weight-bold"
-                  >Status</label
+                  >Statut</label
                 >
                 <input
                   v-model="isAdministrator"
@@ -376,7 +376,7 @@ h1 {
   border-radius: 50%;
   margin-top: 20px;
 }
-// Style du statu
+// Style du statut
 .perso-status {
   background-color: #c4c4c4;
 }
