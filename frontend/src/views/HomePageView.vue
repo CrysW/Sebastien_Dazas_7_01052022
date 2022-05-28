@@ -49,21 +49,27 @@
     <div class="container">
       <div class="row d-flex justify-content-center">
         <div class="col col-sm-12 col-md-8 col-lg-6">
-          <div class="card perso-card">
+          <div
+            class="card perso-card"
+            v-for="publication in publications"
+            v-bind:key="publication.idPublication"
+          >
             <div class="card-body">
               <div class="d-flex">
                 <!-- Photo du publicateur -->
                 <img
                   class="perso-profil-picture"
-                  src="../assets/test-profile.jpg"
+                  v-bind:src="publication.profilePicture"
                   alt="photo de profil"
                 />
                 <div>
                   <!-- Nom du publicateur -->
-                  <p class="perso-name font-weight-bold text-white">Jane Doe</p>
+                  <p class="perso-name font-weight-bold text-white">
+                    {{ publication.firstName }} {{ publication.lastName }}
+                  </p>
                   <!-- Date de la publication -->
                   <p class="perso-date font-weight-bold font-italic text-white">
-                    Publié le 11/04/2022 à 21:16
+                    {{ publication.publicationDate }}
                   </p>
                 </div>
               </div>
@@ -88,20 +94,16 @@
                 </button>
               </form>
               <!-- Image de la publication -->
-              <div>
+              <div v-if="publication.publicationPicture != null">
                 <img
                   class="image-publication"
-                  src="../assets/test-publication.jpg"
+                  v-bind:src="publication.publicationPicture"
                   alt="photo d'un test"
                 />
               </div>
               <!-- Message de la publication -->
               <p class="perso-msg text-white">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Officiis dolorum minus autem sint, perspiciatis voluptatem
-                accusantium, facilis veritatis voluptas soluta error fugit?
-                Debitis, cumque corporis. Vitae molestias deserunt nemo
-                perspiciatis.
+                {{ publication.publicationContent }}
               </p>
             </div>
           </div>
@@ -114,12 +116,65 @@
 <script>
 // IMPORT(S)
 import Header from "../components/HeaderComponent.vue"; // Importation du composant "HeaderComponent"
+import axios from "axios"; // Importation du package "axios"
 
 // EXPORT(S)
 export default {
   name: "HomePage",
+  // Utilisation des composants
   components: {
     Header,
+  },
+  // Fonction qui permet de retourner les variables
+  data: function () {
+    return {
+      publicationDate: "",
+      publicationPicture: "",
+      publicationContent: "",
+      firstName: "",
+      lastName: "",
+      profilePicture: "",
+      publication: {},
+      publications: [],
+    };
+  },
+  // Hooks de cycle de vie : Appelé juste après que l'instance a été montée
+  mounted() {
+    // Récupération de 'user' dans le localStorage
+    const userLocalStorage = localStorage.getItem("user");
+    console.log("---> Contenu de 'userLocalStorage'");
+    console.log(userLocalStorage);
+    // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
+    const userLocalStorageToObject = JSON.parse(userLocalStorage);
+    console.log("---> Contenu de 'userLocalStorageToObject'");
+    console.log(userLocalStorageToObject);
+
+    // Récupération de 'idUser'
+    const idUser = userLocalStorageToObject.idUser;
+    console.log("---> Récupération de 'idUser'");
+    console.log(idUser);
+    // Récupération du 'token'
+    const token = userLocalStorageToObject.token;
+    console.log("---> Récupération du 'token'");
+    console.log(token);
+
+    // Requête axios pour récupérer toutes les publications
+    axios
+      .get("http://localhost:3000/api/publications/", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        // Affichage dans la console de la reponse
+        console.log(response);
+        // Pour l'affichage des publications
+        this.publications = response.data.publications;
+      })
+      .catch((error) => {
+        // Affichage de l'erreur dans la console
+        console.log(error);
+      });
   },
 };
 </script>

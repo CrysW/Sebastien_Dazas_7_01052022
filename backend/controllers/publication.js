@@ -8,7 +8,7 @@ const fs = require("fs-extra"); // Importation du package file system 'fs'
 // PUBLIER : Middleware pour ajouter une publication
 exports.addPublication = function (req, res, next) {
   // RECUPERATION 'idUser' DANS L'URL
-  const idUserUrl = req.originalUrl.split("=")[1];
+  const idUserUrl = req.params.id;
   // RECUPERATION DE LA DATE ET DE L'HEURE
   // 1°) Récupération de la date du jour
   const currentDate = JSON.stringify(new Date());
@@ -124,14 +124,14 @@ exports.addPublication = function (req, res, next) {
 exports.seeAllPublications = function (req, res, next) {
   // Requête SQL pour chercher toutes les publications dans la base de données
   mysqlConnection.query(
-    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser ORDER BY publicationDate DESC;`,
+    `SELECT publications.idPublication, DATE_FORMAT(publicationDate, "Publié le %d/%m/%Y à %H:%i:%s") AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser ORDER BY publicationDate DESC;`,
     function (error, results, fields) {
       if (error) {
         res
           .status(400)
           .json({ message: "Une erreur est survenue ! 😅", error });
       } else {
-        res.status(200).json(results);
+        res.status(200).json({ publications: results });
       }
     }
   );

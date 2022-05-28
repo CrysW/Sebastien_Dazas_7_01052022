@@ -11,9 +11,9 @@ const router = express.Router();
 
 // CREATION DES ROUTES
 // Route pour ajouter une publication
-router.post("/", authentication, multer, publicationCtrl.addPublication);
+router.post("/:id", multer, publicationCtrl.addPublication);
 // Route pour voir toute les publications
-router.get("/", authentication, publicationCtrl.seeAllPublications);
+router.get("/", publicationCtrl.seeAllPublications);
 // Route pour modifier une publication
 router.put("/", authentication, multer, publicationCtrl.updatePublication);
 // Route pour supprimer une publication
