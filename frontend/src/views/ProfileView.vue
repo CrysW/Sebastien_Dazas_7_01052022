@@ -349,7 +349,7 @@ export default {
       this.$router.push("/");
     },
     // Fonction qui permet d'empêcher la soumission du formulaire
-    submitForm(e) {
+    submitForm: function (e) {
       e.preventDefault();
     },
   },

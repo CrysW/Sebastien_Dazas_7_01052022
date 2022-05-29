@@ -14,6 +14,7 @@
               <div class="form-group">
                 <label for="FormControlTextarea"></label>
                 <textarea
+                  v-model="publicationContent"
                   class="form-control"
                   id="FormControlTextarea"
                   rows="3"
@@ -29,10 +30,20 @@
                   class="btn perso-btn font-weight-bold text-white"
                   >Ajouter une image</label
                 >
-                <input type="file" class="d-none" accept="image/*" id="file" />
+                <input
+                  v-on:change="addPicture"
+                  type="file"
+                  class="d-none"
+                  accept="image/*"
+                  id="file"
+                />
               </form>
               <!-- Bouton "publier"-->
-              <form class="d-flex justify-content-center">
+              <form
+                v-on:submit="submitForm"
+                v-on:click="addPublication()"
+                class="d-flex justify-content-center"
+              >
                 <button
                   type="submit"
                   class="btn perso-btn font-weight-bold text-white"
@@ -41,6 +52,8 @@
                 </button>
               </form>
             </div>
+            <!-- Affichage du message d'erreur -->
+            <p class="font-italic text-center text-white">{{ error }}</p>
           </div>
         </div>
       </div>
@@ -136,6 +149,7 @@ export default {
       profilePicture: "",
       publication: {},
       publications: [],
+      error: "",
     };
   },
   // Hooks de cycle de vie : Appelé juste après que l'instance a été montée
@@ -175,6 +189,177 @@ export default {
         // Affichage de l'erreur dans la console
         console.log(error);
       });
+  },
+  methods: {
+    // Fonction qui permet d'ajouter une image
+    addPicture: function (event) {
+      // Pour l'affichage de l'image
+      this.publicationPicture = event.target.files[0];
+    },
+    // Fonction qui permet d'ajouter une publication
+    addPublication: function () {
+      // Récupération de 'user' dans le localStorage
+      const userLocalStorage = localStorage.getItem("user");
+      console.log("---> Contenu de 'userLocalStorage'");
+      console.log(userLocalStorage);
+      // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
+      const userLocalStorageToObject = JSON.parse(userLocalStorage);
+      console.log("---> Contenu de 'userLocalStorageToObject'");
+      console.log(userLocalStorageToObject);
+
+      // Récupération de 'idUser'
+      const idUser = userLocalStorageToObject.idUser;
+      console.log("---> Récupération de 'idUser'");
+      console.log(idUser);
+      // Récupération du 'token'
+      const token = userLocalStorageToObject.token;
+      console.log("---> Récupération du 'token'");
+      console.log(token);
+
+      // PUBLICATION DU MESSAGE SELON 4 CAS DE FIGURE
+      // CAS 1 : Il y a une image et un message
+      if (this.publicationContent && this.publicationPicture) {
+        if (
+          this.publicationContent.length < 10 ||
+          this.publicationContent.length > 280
+        ) {
+          // Message d'erreur qui sera affiché sur le frontend
+          this.error =
+            "La publication nécessite un message compris entre 10 et 280 caractères ! 😅";
+          // Attente de rechargement de la page
+          setTimeout(function () {
+            // Affichage du message dans la console
+            console.log("J'attend 3 secondes avant de disparaître");
+            // Rechargement de la page
+            window.location.reload();
+          }, 3000);
+        } else {
+          // Implémentation d'un objet "FormData"
+          const formData = new FormData();
+          // Ajout du message et de l'image dans "formData"
+          formData.append("image", this.publicationPicture);
+          formData.append(
+            "publication",
+            JSON.stringify({ publicationContent: this.publicationContent })
+          );
+          // Requête axios pour créer une publication
+          axios
+            .post(
+              `http://localhost:3000/api/publications/${idUser}`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: "Bearer " + token,
+                },
+              }
+            )
+            .then((response) => {
+              // Affichage dans la console de la reponse
+              console.log(response);
+              // Rechargement de la page
+              window.location.reload();
+            })
+            .catch((error) => {
+              // Affichage dans la console de l'erreur
+              console.log(error);
+            });
+        }
+      }
+
+      // CAS 2 : Il y a une image mais pas de message
+      if (this.publicationPicture && !this.publicationContent) {
+        // Implémentation d'un objet "FormData"
+        const formData = new FormData();
+        // Ajout de l'image dans "formData"
+        formData.append("image", this.publicationPicture);
+        // Requête axios pour créer une publication
+        axios
+          .post(`http://localhost:3000/api/publications/${idUser}`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: "Bearer " + token,
+            },
+          })
+          .then((response) => {
+            // Affichage dans la console de la reponse
+            console.log(response);
+            // Rechargement de la page
+            window.location.reload();
+          })
+          .catch((error) => {
+            // Affichage dans la console de l'erreur
+            console.log(error);
+          });
+      }
+
+      // CAS 3 : Il n'y pas d'image mais un message
+      if (this.publicationContent && !this.publicationPicture) {
+        if (
+          this.publicationContent.length < 10 ||
+          this.publicationContent.length > 280
+        ) {
+          // Message d'erreur qui sera affiché sur le frontend
+          this.error =
+            "La publication nécessite un message compris entre 10 et 280 caractères ! 😅";
+          // Attente de rechargement de la page
+          setTimeout(function () {
+            // Affichage du message dans la console
+            console.log("J'attend 3 secondes avant de disparaître");
+            // Rechargement de la page
+            window.location.reload();
+          }, 3000);
+        } else {
+          // Implémentation d'un objet "FormData"
+          const formData = new FormData();
+          // Ajout du message dans "formData"
+          formData.append(
+            "publication",
+            JSON.stringify({ publicationContent: this.publicationContent })
+          );
+          // Requête axios pour créer une publication
+          axios
+            .post(
+              `http://localhost:3000/api/publications/${idUser}`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: "Bearer " + token,
+                },
+              }
+            )
+            .then((response) => {
+              // Affichage dans la console de la reponse
+              console.log(response);
+              // Rechargement de la page
+              window.location.reload();
+            })
+            .catch((error) => {
+              // Affichage dans la console de l'erreur
+              console.log(error);
+            });
+        }
+      }
+
+      // CAS 4 : Il n'y pas d'image et pas de message
+      if (!this.publicationContent & !this.publicationPicture) {
+        // Message d'erreur qui sera affiché sur le frontend
+        this.error =
+          "La publication nécessite au minimum une image ou un texte ! 😅";
+        // Attente de rechargement de la page
+        setTimeout(function () {
+          // Affichage du message dans la console
+          console.log("J'attend 3 secondes avant de disparaître");
+          // Rechargement de la page
+          window.location.reload();
+        }, 3000);
+      }
+    },
+    // Fonction qui permet d'empêcher la soumission du formulaire
+    submitForm: function (e) {
+      e.preventDefault();
+    },
   },
 };
 </script>
