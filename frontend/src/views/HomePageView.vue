@@ -91,6 +91,7 @@
               <!-- Bouton 'modifier' -->
               <form class="d-flex justify-content-center">
                 <button
+                  v-if="publication.idUser == idUser || isAdministrator == '1'"
                   type="submit"
                   class="btn perso-btn font-weight-bold text-white"
                 >
@@ -100,6 +101,7 @@
               <!-- Bouton 'supprimer' -->
               <form class="d-flex justify-content-center">
                 <button
+                  v-if="publication.idUser == idUser || isAdministrator == '1'"
                   type="submit"
                   class="btn perso-btn perso-btn-danger font-weight-bold text-white"
                 >
@@ -144,6 +146,8 @@ export default {
       publicationDate: "",
       publicationPicture: "",
       publicationContent: "",
+      idUser: JSON.parse(localStorage.getItem("user")).idUser,
+      isAdministrator: JSON.parse(localStorage.getItem("user")).isAdministrator,
       firstName: "",
       lastName: "",
       profilePicture: "",
@@ -167,6 +171,10 @@ export default {
     const idUser = userLocalStorageToObject.idUser;
     console.log("---> Récupération de 'idUser'");
     console.log(idUser);
+    // Récupération de 'isAdministrator'
+    const isAdministrator = userLocalStorageToObject.isAdministrator;
+    console.log("---> Récupération de 'isAdministrator'");
+    console.log(isAdministrator);
     // Récupération du 'token'
     const token = userLocalStorageToObject.token;
     console.log("---> Récupération du 'token'");

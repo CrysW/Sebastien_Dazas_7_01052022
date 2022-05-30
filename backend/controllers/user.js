@@ -82,6 +82,7 @@ exports.login = function (req, res, next) {
               res.status(201).json({
                 idUser: results[0].idUser,
                 token: token,
+                isAdministrator: results[0].isAdministrator,
               });
             })
             .catch(function (error) {
