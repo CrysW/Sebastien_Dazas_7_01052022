@@ -91,7 +91,7 @@
               <!-- Bouton 'modifier' -->
               <form class="d-flex justify-content-center">
                 <button
-                  v-if="publication.idUser == idUser || isAdministrator == '1'"
+                  v-if="publication.idUser == idUser"
                   type="submit"
                   class="btn perso-btn font-weight-bold text-white"
                 >
@@ -99,7 +99,11 @@
                 </button>
               </form>
               <!-- Bouton 'supprimer' -->
-              <form class="d-flex justify-content-center">
+              <form
+                v-on:submit="submitForm"
+                v-on:click="deletePublication(publication.idPublication)"
+                class="d-flex justify-content-center"
+              >
                 <button
                   v-if="publication.idUser == idUser || isAdministrator == '1'"
                   type="submit"
@@ -363,6 +367,47 @@ export default {
           window.location.reload();
         }, 3000);
       }
+    },
+    // Fonction qui permet de supprimer une publication
+    deletePublication: function (idPublication) {
+      // Récupération de 'user' dans le localStorage
+      const userLocalStorage = localStorage.getItem("user");
+      console.log("---> Contenu de 'userLocalStorage'");
+      console.log(userLocalStorage);
+      // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
+      const userLocalStorageToObject = JSON.parse(userLocalStorage);
+      console.log("---> Contenu de 'userLocalStorageToObject'");
+      console.log(userLocalStorageToObject);
+      // Récupération de 'idUser'
+      const idUser = userLocalStorageToObject.idUser;
+      console.log("---> Récupération de 'idUser'");
+      console.log(idUser);
+      // Récupération du 'token'
+      const token = userLocalStorageToObject.token;
+      console.log("---> Récupération du 'token'");
+      console.log(token);
+      console.log("coucou");
+
+      // Requête axios pour supprimer une publication
+      axios
+        .delete(`http://localhost:3000/api/publications/${idPublication}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          params: {
+            idPublication: this.idPublication,
+          },
+        })
+        .then((response) => {
+          // Affichage dans la console de la reponse
+          console.log(response);
+          // Rechargement de la page
+          window.location.reload();
+        })
+        .catch((error) => {
+          // Affichage dans la console de l'erreur
+          console.log(error);
+        });
     },
     // Fonction qui permet d'empêcher la soumission du formulaire
     submitForm: function (e) {

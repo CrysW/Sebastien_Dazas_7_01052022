@@ -17,7 +17,7 @@ router.get("/", publicationCtrl.seeAllPublications);
 // Route pour modifier une publication
 router.put("/", authentication, multer, publicationCtrl.updatePublication);
 // Route pour supprimer une publication
-router.delete("/", authentication, publicationCtrl.deletePublication);
+router.delete("/:id", publicationCtrl.deletePublication);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

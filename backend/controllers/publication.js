@@ -376,7 +376,7 @@ exports.updatePublication = function (req, res, next) {
 exports.deletePublication = function (req, res, next) {
   // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
-    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = ${req.body.idPublication}`,
+    `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = ${req.params.id}`,
     function (error, results, fields) {
       if (error) {
         res
@@ -386,7 +386,7 @@ exports.deletePublication = function (req, res, next) {
         if (results[0].publicationPicture === null) {
           // Requête SQL pour supprimer les données de la publication dans la base de données
           mysqlConnection.query(
-            `DELETE FROM publications WHERE idPublication = "${req.body.idPublication}"`,
+            `DELETE FROM publications WHERE idPublication = "${req.params.id}"`,
             function (error, results, fields) {
               if (error) {
                 res
@@ -405,7 +405,7 @@ exports.deletePublication = function (req, res, next) {
             results[0].publicationPicture.split("/images")[1];
           // Requête SQL pour supprimer les données de la publication dans la base de données
           mysqlConnection.query(
-            `DELETE FROM publications WHERE idPublication = "${req.body.idPublication}"`,
+            `DELETE FROM publications WHERE idPublication = "${req.params.id}"`,
             function (error, results, fields) {
               if (error) {
                 res
