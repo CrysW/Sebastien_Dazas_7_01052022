@@ -133,6 +133,10 @@
                   Enregistrer
                 </button>
               </form>
+              <!-- Message de confirmation -->
+              <p class="font-italic text-center text-white">
+                {{ message }}
+              </p>
             </div>
           </div>
         </div>
@@ -162,6 +166,7 @@ export default {
       firstName: "",
       emailAdress: "",
       password: "",
+      message: "",
     };
   },
   // Hooks de cycle de vie : Appelé juste après que l'instance a été montée
@@ -258,8 +263,15 @@ export default {
           console.log(response);
           // Pour l'affichage de l'image
           this.profilePicture = response.data.profilePicture;
-          // Rechargement de la page
-          window.location.reload();
+          // Message qui sera affiché sur le frontend
+          this.message = "La donnée à été mise à jour ! 🥳";
+          // Attente de rechargement de la page
+          setTimeout(function () {
+            // Affichage du message dans la console
+            console.log("J'attend 3 secondes avant de disparaître");
+            // Rechargement de la page
+            window.location.reload();
+          }, 2500);
         })
         .catch((error) => {
           // Affichage dans la console de l'erreur'
@@ -300,8 +312,15 @@ export default {
         .then((response) => {
           // Affichage dans la console de la reponse
           console.log(response);
-          // Rechargement de la page
-          window.location.reload();
+          // Message qui sera affiché sur le frontend
+          this.message = "La donnée à été mise à jour ! 🥳";
+          // Attente de rechargement de la page
+          setTimeout(function () {
+            // Affichage du message dans la console
+            console.log("J'attend 3 secondes avant de disparaître");
+            // Rechargement de la page
+            window.location.reload();
+          }, 2500);
         })
         .catch((error) => {
           // Affichage dans la console de l'erreur'

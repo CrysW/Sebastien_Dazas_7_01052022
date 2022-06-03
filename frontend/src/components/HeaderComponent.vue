@@ -26,7 +26,7 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item mx-3">
             <router-link class="nav-link text-white" to="/profile"
-              >Profile</router-link
+              >Profil</router-link
             >
           </li>
           <li class="nav-item mx-3">
