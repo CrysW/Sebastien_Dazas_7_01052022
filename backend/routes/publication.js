@@ -15,7 +15,7 @@ router.post("/:id", multer, publicationCtrl.addPublication);
 // Route pour voir toute les publications
 router.get("/", publicationCtrl.seeAllPublications);
 // Route pour modifier une publication
-router.put("/", authentication, multer, publicationCtrl.updatePublication);
+router.put("/:id", multer, publicationCtrl.updatePublication);
 // Route pour supprimer une publication
 router.delete("/:id", publicationCtrl.deletePublication);
 

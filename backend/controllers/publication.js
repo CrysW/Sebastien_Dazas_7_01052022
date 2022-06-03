@@ -140,7 +140,7 @@ exports.seeAllPublications = function (req, res, next) {
 // MODIFIER UNE PUBLICATION : Middleware pour modifier une publication
 exports.updatePublication = function (req, res, next) {
   // RECUPERATION 'idPublication' DANS L'URL
-  const idPublicationUrl = req.originalUrl.split("idPublication=")[1];
+  const idPublicationUrl = req.params.id;
   // Requête SQL pour récupérer les données de la publication dans la base de données
   mysqlConnection.query(
     `SELECT publications.idPublication, CAST(publications.publicationDate AS CHAR) AS publicationDate, publications.publicationPicture, publications.publicationContent, users.idUser, users.firstName, users.lastName, users.profilePicture FROM publications INNER JOIN users ON publications.idUser = users.idUser WHERE idPublication = "${idPublicationUrl}"`,
