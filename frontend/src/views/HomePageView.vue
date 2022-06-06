@@ -248,25 +248,10 @@ export default {
   mounted() {
     // Récupération de 'user' dans le localStorage
     const userLocalStorage = localStorage.getItem("user");
-    console.log("---> Contenu de 'userLocalStorage'");
-    console.log(userLocalStorage);
     // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
     const userLocalStorageToObject = JSON.parse(userLocalStorage);
-    console.log("---> Contenu de 'userLocalStorageToObject'");
-    console.log(userLocalStorageToObject);
-
-    // Récupération de 'idUser'
-    const idUser = userLocalStorageToObject.idUser;
-    console.log("---> Récupération de 'idUser'");
-    console.log(idUser);
-    // Récupération de 'isAdministrator'
-    const isAdministrator = userLocalStorageToObject.isAdministrator;
-    console.log("---> Récupération de 'isAdministrator'");
-    console.log(isAdministrator);
     // Récupération du 'token'
     const token = userLocalStorageToObject.token;
-    console.log("---> Récupération du 'token'");
-    console.log(token);
 
     // Requête axios pour récupérer toutes les publications
     axios
@@ -292,25 +277,17 @@ export default {
       // Pour l'affichage de l'image
       this.publicationPicture = event.target.files[0];
     },
+
     // Fonction qui permet d'ajouter une publication
     addPublication: function () {
       // Récupération de 'user' dans le localStorage
       const userLocalStorage = localStorage.getItem("user");
-      console.log("---> Contenu de 'userLocalStorage'");
-      console.log(userLocalStorage);
       // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
       const userLocalStorageToObject = JSON.parse(userLocalStorage);
-      console.log("---> Contenu de 'userLocalStorageToObject'");
-      console.log(userLocalStorageToObject);
-
       // Récupération de 'idUser'
       const idUser = userLocalStorageToObject.idUser;
-      console.log("---> Récupération de 'idUser'");
-      console.log(idUser);
       // Récupération du 'token'
       const token = userLocalStorageToObject.token;
-      console.log("---> Récupération du 'token'");
-      console.log(token);
 
       // PUBLICATION DU MESSAGE SELON 4 CAS DE FIGURE
       // CAS 1 : Il y a une image et un message
@@ -452,24 +429,15 @@ export default {
         }, 3000);
       }
     },
+
     // Fonction qui permet de supprimer une publication
     deletePublication: function (idPublication) {
       // Récupération de 'user' dans le localStorage
       const userLocalStorage = localStorage.getItem("user");
-      console.log("---> Contenu de 'userLocalStorage'");
-      console.log(userLocalStorage);
       // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
       const userLocalStorageToObject = JSON.parse(userLocalStorage);
-      console.log("---> Contenu de 'userLocalStorageToObject'");
-      console.log(userLocalStorageToObject);
-      // Récupération de 'idUser'
-      const idUser = userLocalStorageToObject.idUser;
-      console.log("---> Récupération de 'idUser'");
-      console.log(idUser);
       // Récupération du 'token'
       const token = userLocalStorageToObject.token;
-      console.log("---> Récupération du 'token'");
-      console.log(token);
 
       // Requête axios pour supprimer une publication
       axios
@@ -507,24 +475,14 @@ export default {
     updatePublication: function (idPublication) {
       // Récupération de 'idPublication'
       const idPost = idPublication;
-      console.log("---> Récupération de 'idPublication'");
-      console.log(idPost);
       // Récupération de 'user' dans le localStorage
       const userLocalStorage = localStorage.getItem("user");
-      console.log("---> Contenu de 'userLocalStorage'");
-      console.log(userLocalStorage);
       // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
       const userLocalStorageToObject = JSON.parse(userLocalStorage);
-      console.log("---> Contenu de 'userLocalStorageToObject'");
-      console.log(userLocalStorageToObject);
-      // Récupération de 'idUser'
-      const idUser = userLocalStorageToObject.idUser;
-      console.log("---> Récupération de 'idUser'");
-      console.log(idUser);
       // Récupération du 'token'
       const token = userLocalStorageToObject.token;
-      console.log("---> Récupération du 'token'");
-      console.log(token);
+      // console.log("---> Récupération du 'token'");
+      // console.log(token);
 
       // MODIFICATION DE LA PUBLICATION SELON 3 CAS DE FIGURE
       // CAS 1 : Il y a une image et un message à mettre à jour
@@ -538,8 +496,6 @@ export default {
             "La publication nécessite un message compris entre 10 et 280 caractères ! 😅";
           // Attente de rechargement de la page
           setTimeout(function () {
-            // Affichage du message dans la console
-            console.log("J'attend 3 secondes avant de disparaître");
             // Rechargement de la page
             window.location.reload();
           }, 3000);
@@ -610,8 +566,6 @@ export default {
             "La publication nécessite un message compris entre 10 et 280 caractères ! 😅";
           // Attente de rechargement de la page
           setTimeout(function () {
-            // Affichage du message dans la console
-            console.log("J'attend 3 secondes avant de disparaître");
             // Rechargement de la page
             window.location.reload();
           }, 3000);

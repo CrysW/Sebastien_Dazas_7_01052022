@@ -173,25 +173,16 @@ export default {
   mounted() {
     // Récupération de 'user' dans le localStorage
     const userLocalStorage = localStorage.getItem("user");
-    console.log("---> Contenu de 'userLocalStorage'");
-    console.log(userLocalStorage);
     // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
     const userLocalStorageToObject = JSON.parse(userLocalStorage);
-    console.log("---> Contenu de 'userLocalStorageToObject'");
-    console.log(userLocalStorageToObject);
     // Récupération de 'idUser'
     const idUser = userLocalStorageToObject.idUser;
-    console.log("---> Récupération de 'idUser'");
-    console.log(idUser);
     // Requête axios pour récupérer les données de l'utilisateurs
     axios
       .get(`http://localhost:3000/api/users/${idUser}`)
       .then((response) => {
         // Affichage dans la console de la reponse
-        console.log(
-          "---> LA REQUETE A REUSSI => Contenu de 'response.data[0]'"
-        );
-        console.log(response.data[0]);
+        console.log(response);
         // Pour l'affichage de l'image
         this.profilePicture = response.data[0].profilePicture;
         // Pour l'affichage du lastName
@@ -211,7 +202,6 @@ export default {
       })
       .catch((error) => {
         // Affichage dans la console de l'erreur
-        console.log("---> LA REQUETE A ECHOUE => Contenu de 'error'");
         console.log(error);
       });
   },
@@ -220,35 +210,18 @@ export default {
     updateProfilPictureUser: function (event) {
       // Récupération de 'user' dans le localStorage
       const userLocalStorage = localStorage.getItem("user");
-      console.log("---> Contenu de 'userLocalStorage'");
-      console.log(userLocalStorage);
       // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
       const userLocalStorageToObject = JSON.parse(userLocalStorage);
-      console.log("---> Contenu de 'userLocalStorageToObject'");
-      console.log(userLocalStorageToObject);
-
       // Récupération de 'idUser'
       const idUser = userLocalStorageToObject.idUser;
-      console.log("---> Récupération de 'idUser'");
-      console.log(idUser);
       // Récupération du 'token'
       const token = userLocalStorageToObject.token;
-      console.log("---> Récupération du 'token'");
-      console.log(token);
-
-      // Récupération du fichier
-      console.log("---> Récupération du fichier");
-      console.log(event.target.files[0]);
       // Pour l'affichage de l'image
       this.profilePicture = event.target.files[0];
       // Implémentation d'un objet "FormData"
       let formData = new FormData();
-      console.log("---> Contenu de 'formData' avant l'ajout de l'image");
-      console.log(formData);
       // Ajout du fichier dans "formData"
       formData.append("image", this.profilePicture);
-      console.log("---> Contenu de 'formData' après l'ajout de l'image");
-      console.log(formData);
 
       // Requête axios pour modifier la photo de l'utilisateur
       axios
@@ -278,25 +251,17 @@ export default {
           console.log(error);
         });
     },
+
     // Fonction qui permet de mettre à jour les données de l'utilisateur
     updateUserData: function () {
       // Récupération de 'user' dans le localStorage
       const userLocalStorage = localStorage.getItem("user");
-      console.log("---> Contenu de 'userLocalStorage'");
-      console.log(userLocalStorage);
       // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
       const userLocalStorageToObject = JSON.parse(userLocalStorage);
-      console.log("---> Contenu de 'userLocalStorageToObject'");
-      console.log(userLocalStorageToObject);
-
       // Récupération de 'idUser'
       const idUser = userLocalStorageToObject.idUser;
-      console.log("---> Récupération de 'idUser'");
-      console.log(idUser);
       // Récupération du 'token'
       const token = userLocalStorageToObject.token;
-      console.log("---> Récupération du 'token'");
-      console.log(token);
 
       // Requête axios pour modifier les données de l'utilisateur
       const data = {
@@ -318,9 +283,6 @@ export default {
           this.message = "La donnée à été mise à jour ! 🥳";
           // Attente de rechargement de la page
           setTimeout(function () {
-            // Affichage du message dans la console
-            console.log("J'attend 3 secondes avant de disparaître");
-            // Rechargement de la page
             window.location.reload();
           }, 2500);
         })
@@ -329,25 +291,17 @@ export default {
           console.log(error);
         });
     },
+
     // Fonction qui permet de supprimer le compte de l'utilisateur
     deleteAccount: function () {
       // Récupération de 'user' dans le localStorage
       const userLocalStorage = localStorage.getItem("user");
-      console.log("---> Contenu de 'userLocalStorage'");
-      console.log(userLocalStorage);
       // Transformation de 'userLocalStorage' qui est une 'String' en 'Object'
       const userLocalStorageToObject = JSON.parse(userLocalStorage);
-      console.log("---> Contenu de 'userLocalStorageToObject'");
-      console.log(userLocalStorageToObject);
-
       // Récupération de 'idUser'
       const idUser = userLocalStorageToObject.idUser;
-      console.log("---> Récupération de 'idUser'");
-      console.log(idUser);
       // Récupération du 'token'
       const token = userLocalStorageToObject.token;
-      console.log("---> Récupération du 'token'");
-      console.log(token);
 
       // Requête axios pour supprimer les données de l'utilisateur
       axios

@@ -53,14 +53,8 @@ export default {
   methods: {
     // Fonction qui permet de deconnecter l'utilisateur
     logout: function () {
-      // Affichage du contenu du localStorage dans la console
-      console.log("---> Contenu du localStorage avant suppression");
-      console.log(localStorage);
       // Suppression des données de l'utilisateur dans le localStorage
       localStorage.clear();
-      // Affichage du contenu du localStorage dans la console
-      console.log("---> Contenu du localStorage après suppression");
-      console.log(localStorage);
       // Navigation vers la page de connexion/inscription
       this.$router.push("/");
     },

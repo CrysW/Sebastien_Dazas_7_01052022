@@ -145,10 +145,12 @@ export default {
     switchToCreateAccount: function () {
       this.mode = "signup";
     },
+
     // Fonction qui permet de 'switcher' vers la vue en mode 'connexion'
     switchToLogin: function () {
       this.mode = "login";
     },
+
     // Fonction qui permet de se connecter
     login: function () {
       // Requête axios pour connecter l'utilisateur
@@ -159,8 +161,7 @@ export default {
         })
         .then((response) => {
           // Affichage dans la console de la reponse
-          console.log("---> LA REQUETE A REUSSI => Contenu de 'response.data'");
-          console.log(response.data);
+          console.log(response);
           // Création d'un objet 'user' contenant les données de la requête 'post'
           const user = response.data;
           // Sauvegarde des données de l'utilisateur dans le localStorage
@@ -170,29 +171,19 @@ export default {
         })
         .catch((error) => {
           // Affichage dans la console de l'erreur
-          console.log("---> LA REQUETE A ECHOUE => Contenu de 'error'");
           console.log(error);
           if (error.response) {
             if (error.response.data.message) {
-              // Affichage dans la console du message d'erreur provenant du backend
-              console.log(
-                "---> MESSAGE D'ERREUR PROVENANT DU BACKEND => Contenu de 'error.response.data.message'"
-              );
-              console.log(error.response.data.message);
               // Message d'erreur qui sera affiché sur le frontend
               this.error = error.response.data.message;
             } else if (error.response.data) {
-              // Affichage dans la console du message d'erreur provenant du backend
-              console.log(
-                "---> MESSAGE D'ERREUR PROVENANT DU BACKEND => Contenu de 'error.response.data.message'"
-              );
-              console.log(error.response.data);
               // Message d'erreur qui sera affiché sur le frontend
               this.error = error.response.data;
             }
           }
         });
     },
+
     // Fonction qui permet de s'inscrire
     signup: function () {
       const mySelf = this;
@@ -206,21 +197,14 @@ export default {
         })
         .then((response) => {
           // Affichage dans la console de la reponse
-          console.log("---> LA REQUETE A REUSSI => Contenu de 'response.data'");
-          console.log(response.data);
+          console.log(response);
           // Connexion de l'utilisateur
           mySelf.login();
         })
         .catch((error) => {
           // Affichage dans la console de l'erreur
-          console.log("---> LA REQUETE A ECHOUE => Contenu de 'error'");
           console.log(error);
           if (error.response) {
-            // Affichage dans la console du message d'erreur provenant du backend
-            console.log(
-              "---> MESSAGE D'ERREUR PROVENANT DU BACKEND => Contenu de 'error.response.data.message'"
-            );
-            console.log(error.response.data.message);
             // Message d'erreur qui sera affiché sur le frontend
             this.error = error.response.data.message;
           }
