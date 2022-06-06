@@ -6,7 +6,6 @@ const morgan = require("morgan"); // Importation du package 'morgan' (logger htp
 const mysql = require("./database/db"); // Importation de la connexion à la base de données mysql
 const userRoutes = require("./routes/user"); // Importation du 'router' pour le parcours des utilisateurs
 const publicationRoutes = require("./routes/publication"); // Importation du 'router' pour le parcours des publications
-const commentRoutes = require("./routes/comment"); // Importation du 'router' pour le parcours des commentaires
 const path = require("path"); // Importation de 'path' qui donne accès au chemin de fichiers
 
 // Création de l'application 'express'
@@ -41,7 +40,6 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 // Enregistrement du 'router' pour toutes les demandes effectuées
 app.use("/api/users", userRoutes);
 app.use("/api/publications", publicationRoutes);
-app.use("/api/comments", commentRoutes);
 
 // EXPORT(S)
 module.exports = app; // Exportation de l'application 'express'
