@@ -299,15 +299,17 @@ export default {
       console.log(token);
 
       // Requête axios pour modifier les données de l'utilisateur
+      const data = {
+        lastName: this.lastName,
+        firstName: this.firstName,
+        emailAdress: this.emailAdress,
+        password: this.password,
+      };
       axios
-        .put(`http://localhost:3000/api/users/data/${idUser}`, {
+        .put(`http://localhost:3000/api/users/data/${idUser}`, data, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
+            Authorization: "Bearer " + token,
           },
-          lastName: this.lastName,
-          firstName: this.firstName,
-          emailAdress: this.emailAdress,
-          password: this.password,
         })
         .then((response) => {
           // Affichage dans la console de la reponse
@@ -351,7 +353,7 @@ export default {
       axios
         .delete(`http://localhost:3000/api/users/${idUser}`, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
+            Authorization: "Bearer " + token,
           },
         })
         .then((response) => {

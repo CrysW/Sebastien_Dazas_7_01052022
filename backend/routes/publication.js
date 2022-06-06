@@ -11,13 +11,13 @@ const router = express.Router();
 
 // CREATION DES ROUTES
 // Route pour ajouter une publication
-router.post("/:id", multer, publicationCtrl.addPublication);
+router.post("/:id", authentication, multer, publicationCtrl.addPublication);
 // Route pour voir toute les publications
 router.get("/", publicationCtrl.seeAllPublications);
 // Route pour modifier une publication
-router.put("/:id", multer, publicationCtrl.updatePublication);
+router.put("/:id", authentication, multer, publicationCtrl.updatePublication);
 // Route pour supprimer une publication
-router.delete("/:id", publicationCtrl.deletePublication);
+router.delete("/:id", authentication, publicationCtrl.deletePublication);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router

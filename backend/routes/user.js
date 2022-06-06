@@ -29,17 +29,23 @@ router.post("/login", checkConnection, userCtrl.login);
 // Route pour voir un utilisateur
 router.get("/:id", userCtrl.seeOneUser);
 // Route pour modifier la photo de profil
-router.put("/picture/:id", multer, userCtrl.updateProfilPictureUser);
+router.put(
+  "/picture/:id",
+  authentication,
+  multer,
+  userCtrl.updateProfilPictureUser
+);
 // Route pour modifier les données de l'utilisateur
 router.put(
   "/data/:id",
+  authentication,
   checkLastName,
   checkFirstName,
   checkEmail,
   userCtrl.updateUserData
 );
 // Route pour supprimer le compte de l'utilisateur
-router.delete("/:id", userCtrl.deleteAccount);
+router.delete("/:id", authentication, userCtrl.deleteAccount);
 
 // EXPORT(S)
 module.exports = router; // Exportation du router
